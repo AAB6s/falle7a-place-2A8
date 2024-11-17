@@ -30,5 +30,18 @@ class ProduitC
             echo "Erreur : " . $e->getMessage();
         }
     }
+    
+    public function AfficherProduit()
+    {
+        $sql = "SELECT * FROM produit";
+        $db = config::getConnexion();
+        try {
+            $liste = $db->query($sql);
+            return $liste;
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
+        }
+    }
+
 }
 ?>

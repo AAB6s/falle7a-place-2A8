@@ -59,8 +59,7 @@ if (
       <!-- partial:../../partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          
-        </div>
+          </div>
         <ul class="nav">
           <li class="nav-item profile">
             <div class="profile-desc">
@@ -88,7 +87,7 @@ if (
                       <i class="mdi mdi-onepassword  text-info"></i>
                     </div>
                   </div>
-                  
+               </a> 
                 
               </div>
             </div>
