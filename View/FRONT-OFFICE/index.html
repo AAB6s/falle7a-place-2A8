@@ -111,18 +111,7 @@
             </a>
             <a class="btn-sm-square bg-white rounded-circle ms-3" href="cart.html">
               <small class="fa fa-shopping-bag text-body"></small>
-              <span style="position: absolute;
-              right: 40px;
-              background-color: red;
-              width: 20px;
-              height: 20px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              border-radius: 50%;
-              color: #fff
-              ;top: 60%;
-              margin-bottom:100px;">0</span>
+              <span id="cart-count" style="position: absolute; right: 40px; background-color: red; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; border-radius: 50%; color: #fff; top: 60%; margin-bottom:100px;">0</span>
             </a>
           </div>
         </div>
@@ -1589,5 +1578,33 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+
+    <script>
+      // AJAX to get the order count and update the cart icon
+      function updateCartCount() {
+          $.ajax({
+              url: 'getOrderCount.php',  // Adjust path as needed
+              type: 'GET',
+              dataType: 'json',
+              success: function(response) {
+                  if (response.orderCount !== undefined) {
+                      $('#cart-count').text(response.orderCount);  // Update cart count
+                  } else {
+                      console.log("Error: orderCount is undefined.");
+                  }
+              },
+              error: function(xhr, status, error) {
+                  console.error("AJAX request failed:", status, error);
+              }
+          });
+      }
+
+      // Call the function to update the cart count when the page loads
+      $(document).ready(function() {
+          updateCartCount();
+      });
+  </script>
+
   </body>
 </html>

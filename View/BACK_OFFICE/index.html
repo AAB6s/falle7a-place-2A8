@@ -87,123 +87,87 @@
 
           <!-- User Management -->
           <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#user-management"
-              aria-expanded="false"
-              aria-controls="user-management"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-account-multiple"></i>
-              </span>
-              <span class="menu-title">User Management</span>
-              <i class="menu-arrow"></i>
+            <a class="nav-link" href="#">
+                <span class="menu-icon">
+                    <i class="mdi mdi-account-multiple"></i>
+                </span>
+                <span class="menu-title">User Management</span>
             </a>
-            <div class="collapse" id="user-management">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">View Users</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Add User</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Edit User</a>
-                </li>
-              </ul>
-            </div>
-          </li>
+        </li>
 
-          <!-- Service Management -->
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#service-management"
-              aria-expanded="false"
-              aria-controls="service-management"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-briefcase-check"></i>
-              </span>
-              <span class="menu-title">Service Management</span>
-              <i class="menu-arrow"></i>
+        <!-- Worker Management -->
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="#">
+                <span class="menu-icon">
+                    <i class="mdi mdi-account-settings"></i>
+                </span>
+                <span class="menu-title">Worker Management</span>
+            </a>
+        </li>
+
+        <!-- Product Management -->
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="#">
+                <span class="menu-icon">
+                    <i class="mdi mdi-package-variant"></i>
+                </span>
+                <span class="menu-title">Product Management</span>
+            </a>
+        </li>
+
+        <!-- Service Management (with Sub-Menu) -->
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#service-management" aria-expanded="false"
+                aria-controls="service-management">
+                <span class="menu-icon">
+                    <i class="mdi mdi-briefcase-check"></i>
+                </span>
+                <span class="menu-title">Service Management</span>
+                <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="service-management">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Service Analytics</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"
-                    >View/Approve/Disapprove Services</a
-                  >
-                </li>
-              </ul>
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Service Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#crud_service">View Services (CRUD)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#request_service">Manage Service Requests</a>
+                    </li>
+                </ul>
             </div>
-          </li>
+        </li>
 
-          <!-- Order Management -->
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#order-management"
-              aria-expanded="false"
-              aria-controls="order-management"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-cart"></i>
-              </span>
-              <span class="menu-title">Order Management</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="order-management">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">View Orders</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Manage Orders</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <!-- Worker Management -->
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#worker-management"
-              aria-expanded="false"
-              aria-controls="worker-management"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-account-settings"></i>
-              </span>
-              <span class="menu-title">Worker Management</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="worker-management">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">View Workers</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Assign Worker</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Hire Requests</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Manage Ratings and Feedback</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </nav>
+        <!-- Order Management -->
+  <li class="nav-item menu-items">
+    <a
+      class="nav-link"
+      data-toggle="collapse"
+      href="#order-management"
+      aria-expanded="false"
+      aria-controls="order-management"
+    >
+      <span class="menu-icon">
+        <i class="mdi mdi-cart"></i>
+      </span>
+      <span class="menu-title">Order Management</span>
+      <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="order-management">
+      <ul class="nav flex-column sub-menu">
+        <li class="nav-item">
+          <a class="nav-link" href="#">View Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Manage Orders</a>
+        </li>
+      </ul>
+    </div>
+  </li>
+  <!-- Worker Management -->
+</nav>
       <!-- partial -->
 
       <div class="container-fluid page-body-wrapper">

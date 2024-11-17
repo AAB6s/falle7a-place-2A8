@@ -11,7 +11,7 @@
 				{
 					self::$pdo = new PDO
 					(
-						"mysql:host=localhost;dbname=2a",  
+						"mysql:host=localhost;dbname=projet",  
 						"root",  // Nom d'utilisateur
 						"",  // Mot de passe vide
 						[
