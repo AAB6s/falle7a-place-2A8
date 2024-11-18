@@ -81,12 +81,21 @@ $list = $produitC->AfficherProduit();
                 </div>
             </div>
             <div class="row">
-            <?php foreach ($list as $produit) { ?>
+                <style>
+ 
+ .product-item img {
+        height: 220px; 
+        object-fit: cover; 
+        width: 100%; 
+    }
+</style>
+
+<?php foreach ($list as $produit) { ?>
     <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
         <div class="product-item">
             <div class="position-relative bg-light overflow-hidden">
                 <!-- Convert BLOB to Base64 -->
-                <img class="img-fluid w-100" 
+                <img class="img-fluid"
                      src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
                      alt="<?php echo htmlspecialchars($produit['Nom']); ?>">
                 <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>

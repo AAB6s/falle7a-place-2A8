@@ -3,6 +3,9 @@
 include '../Controller/ProduitC.php';  
 $produitC = new ProduitC();
 $list = $produitC->AfficherProduit();
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -367,15 +370,13 @@ $list = $produitC->AfficherProduit();
         <!-- partial -->
 
 
- 
-
-<div class="main-panel">
+        <div class="main-panel">
     <div class="content-wrapper">
         <div class="page-header">
-            <h3 class="page-title"> produit List </h3>
+            <h3 class="page-title">Produit List</h3>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">produits</a></li>
+                    <li class="breadcrumb-item"><a href="#">Produits</a></li>
                     <li class="breadcrumb-item active" aria-current="page">List</li>
                 </ol>
             </nav>
@@ -384,28 +385,43 @@ $list = $produitC->AfficherProduit();
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">liste des variables</h4>
+                        <h4 class="card-title">Liste des produits</h4>
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th>Image</th>
                                         <th>Name</th>
                                         <th>Description</th>
                                         <th>Prix</th>
-                                        <th>Quantite</th>
+                                        <th>Quantité</th>
+                                        <th>Actions</th> 
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($list as $produit): ?>
-                                        <tr>
-                                            <td><?= $produit['Nom']; ?></td>
-                                            <td><?= $produit['Description']; ?></td>
-                                            <td><?= $produit['Prix']; ?> TND</td>
-                                            <td><?= $produit['Quantite']; ?></td>
+                                <?php foreach ($list as $produit): ?>
+                                    <tr>
+                                        <td>
+                                            <img src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
+                                                 alt="<?php echo htmlspecialchars($produit['Nom']); ?>" 
+                                                 style="width: 70px; height: 70px; object-fit: cover;">
+                                        </td>
+                                        <td><?= htmlspecialchars($produit['Nom']); ?></td>
+                                        <td><?= htmlspecialchars($produit['Description']); ?></td>
+                                        <td><?= htmlspecialchars($produit['Prix']); ?> TND</td>
+                                        <td><?= htmlspecialchars($produit['Quantite']); ?></td>
+                                        <td>
+                                            <!-- Bouton Modifier -->
+                                            <a href="edit_produit.php?Id_Produit=<?= $produit['Id_Produit']; ?>" class="btn btn-warning btn-sm">Modifier</a>
+                                            
+                                            <!-- Bouton Supprimer -->
+                                            <a href="delete_product.php?Id_Produit=<?= htmlspecialchars($produit['Id_Produit']); ?>" 
+                                           onclick="return confirm('Are you sure you want to delete this product?');" 
+                                           class="btn btn-danger btn-sm">Supprimer</a>
 
-                                          
-                                        </tr>
-                                    <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -415,6 +431,7 @@ $list = $produitC->AfficherProduit();
         </div>
     </div>
 </div>
+
   <!-- content-wrapper ends -->
           <!-- partial:BACK_OFFICE/partials/_footer.html -->
           <footer class="footer">

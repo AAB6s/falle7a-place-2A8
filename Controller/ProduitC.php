@@ -41,5 +41,20 @@ class ProduitC
             die('Error:' . $e->getMessage());
         }
     }
+    public function deleteProduct($Id)
+    {
+        
+        $sql = "DELETE FROM produit WHERE Id_Produit = :Id_Produit";
+        $db = config::getConnexion();
+        $req = $db->prepare($sql);
+        $req->bindValue(':Id_Produit', $Id);
+        
+        try {
+            $req->execute();
+            echo $req->rowCount() . " row(s) deleted"; 
+        } catch (Exception $e) {
+            die('Error: ' . $e->getMessage());
+        }
+    }
 }
 ?>
