@@ -37,7 +37,7 @@ $list = $produitC->AfficherProduit();
 <body>
     <!-- Navbar Start -->
     <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
-        <!-- Top Bar and Navbar code here (unchanged) -->
+        <!-- Add your Navbar code here -->
     </div>
     <!-- Navbar End -->
 
@@ -85,8 +85,8 @@ $list = $produitC->AfficherProduit();
                     <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                         <div class="product-item">
                             <div class="position-relative bg-light overflow-hidden">
-                                <img class="img-fluid w-100" src="<?php echo htmlspecialchars($produit['Image']); ?>" alt="<?php echo htmlspecialchars($produit['Nom']); ?>">
-                                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
+                            <img class="img-fluid w-100" src="<?php echo 'FRONT-OFFICE/' . htmlspecialchars($produit['Image']); ?>" alt="<?php echo htmlspecialchars($produit['Nom']); ?>">
+                            <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
                             </div>
                             <div class="text-center p-4">
                                 <a class="d-block h5 mb-2" href="#"><?php echo htmlspecialchars($produit['Nom']); ?></a>
@@ -111,6 +111,8 @@ $list = $produitC->AfficherProduit();
         </div>
     </div>
     <!-- Product End -->
+
+
 
 
 

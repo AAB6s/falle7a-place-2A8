@@ -8,8 +8,7 @@ class ProduitC
 
     public function __construct()
     {
-       
-        $this->pdo = config::getConnexion(); 
+        $this->pdo = config::getConnexion();
     }
 
     public function addProduit(Produit $produit)
@@ -30,7 +29,7 @@ class ProduitC
             echo "Erreur : " . $e->getMessage();
         }
     }
-    
+
     public function AfficherProduit()
     {
         $sql = "SELECT * FROM produit";
@@ -42,6 +41,5 @@ class ProduitC
             die('Error:' . $e->getMessage());
         }
     }
-
 }
 ?>

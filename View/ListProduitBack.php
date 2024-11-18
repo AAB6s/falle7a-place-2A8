@@ -1,63 +1,9 @@
+
 <?php
-include '../Controller/produitC.php';
-include_once '../Model/produit.php';
-
-$error = "";
-
-// Create an instance of the controller
+include '../Controller/ProduitC.php';  
 $produitC = new ProduitC();
-
-if (
-    isset($_POST["Nom"]) &&
-    isset($_POST["Description"]) &&
-    isset($_POST["Prix"]) &&
-    isset($_POST["Quantite"]) &&
-    isset($_FILES["Image"]) // Handle file upload
-) {
-    if (
-        !empty($_POST["Nom"]) &&
-        !empty($_POST["Description"]) &&
-        !empty($_POST["Prix"]) &&
-        !empty($_POST["Quantite"]) &&
-        !empty($_FILES["Image"]["name"]) // Ensure image is uploaded
-    ) {
-        // Collect form data
-        $Nom = $_POST['Nom'];
-        $Description = $_POST['Description'];
-        $Prix = $_POST['Prix'];
-        $Quantite = $_POST['Quantite'];
-
-        // Image handling
-        $targetDir = "../View/FRONT-OFFICE/img/";  // Adjust path if needed
-        $imageName = basename($_FILES["Image"]["name"]);
-        $targetFile = $targetDir . $imageName;
-
-        // Check if the file is a valid image
-        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-        $validExtensions = array("jpg", "jpeg", "png", "gif");
-
-        if (in_array($imageFileType, $validExtensions)) {
-            // Upload image
-            if (move_uploaded_file($_FILES["Image"]["tmp_name"], $targetFile)) {
-                $Image = "FRONT-OFFICE/img" . $imageName; // Store relative path in database
-                $produit = new Produit(0, $Image, $Nom, $Description, $Prix, $Quantite);
-                $produitC->addProduit($produit);
-
-                header('Location: ListProduitBack.php');
-                exit();
-            } else {
-                $error = "Sorry, there was an error uploading your file.";
-            }
-        } else {
-            $error = "Invalid image format. Only JPG, JPEG, PNG, and GIF are allowed.";
-        }
-    }
-}
+$list = $produitC->AfficherProduit();
 ?>
-
-<!-- Display error if any -->
-<?php if (!empty($error)) { echo "<div class='error'>$error</div>"; } ?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -419,62 +365,84 @@ if (
           </div>
         </nav>
         <!-- partial -->
-      <div class="main-panel">
-          <div class="content-wrapper">
-            <div class="page-header">
-              <h3 class="page-title"> Products Form  </h3>
-              <nav aria-label="breadcrumb">
+
+
+ 
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title"> produit List </h3>
+            <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="#">Forms</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Form </li>
+                    <li class="breadcrumb-item"><a href="#">produits</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">List</li>
                 </ol>
-              </nav>
-            </div>
-      
-            <div class="col-md-6 grid-margin stretch-card">
+            </nav>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
+                        <h4 class="card-title">liste des variables</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Prix</th>
+                                        <th>Quantite</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($list as $produit): ?>
+                                        <tr>
+                                            <td><?= $produit['Nom']; ?></td>
+                                            <td><?= $produit['Description']; ?></td>
+                                            <td><?= $produit['Prix']; ?> TND</td>
+                                            <td><?= $produit['Quantite']; ?></td>
 
-                        <!-- Display error message if any -->
-                        <?php if (!empty($error)) { ?>
-                            <div style="color: red;"><?php echo $error; ?></div>
-                        <?php } ?>
-
-                        <form action="AddProduit.php" method="POST" enctype="multipart/form-data" class="forms-sample">
-                            <div class="form-group">
-                                <label for="Nom">Product Name</label>
-                                <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Product Name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Description">Description</label>
-                                <textarea class="form-control" id="Description" name="Description" placeholder="Description" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="Prix">Price</label>
-                                <input type="number" class="form-control" id="Prix" name="Prix" step="0.01" placeholder="Price" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Quantite">Quantity</label>
-                                <input type="number" class="form-control" id="Quantite" name="Quantite" placeholder="Quantity" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Image">Product Image</label>
-                                <input type="file" class="form-control" id="Image" name="Image" accept="image/*" required>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary mr-2">Add Product</button>
-                            <button type="reset" class="btn btn-dark">Cancel</button>
-                        </form>
-
+                                          
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Include Bootstrap JS for functionality -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+</div>
+  <!-- content-wrapper ends -->
+          <!-- partial:BACK_OFFICE/partials/_footer.html -->
+          <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
+              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="BACK_OFFICE/assets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="BACK_OFFICE/assets/js/off-canvas.js"></script>
+    <script src="BACK_OFFICE/assets/js/hoverable-collapse.js"></script>
+    <script src="BACK_OFFICE/assets/js/misc.js"></script>
+    <script src="BACK_OFFICE/assets/js/settings.js"></script>
+    <script src="BACK_OFFICE/assets/js/todolist.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <!-- End custom js for this page -->
+  </body>
 </html>
