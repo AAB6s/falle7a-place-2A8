@@ -1,4 +1,4 @@
-<?php
+<?php 
 include '../Controller/produitC.php';
 include_once '../Model/produit.php';
 
@@ -19,7 +19,7 @@ if (
         !empty($_POST["Description"]) &&
         !empty($_POST["Prix"]) &&
         !empty($_POST["Quantite"]) &&
-        !empty($_FILES["Image"]["name"]) // Ensure image is uploaded
+        !empty($_FILES["Image"]["tmp_name"]) // Ensure image is uploaded
     ) {
         // Collect form data
         $Nom = $_POST['Nom'];
@@ -27,33 +27,23 @@ if (
         $Prix = $_POST['Prix'];
         $Quantite = $_POST['Quantite'];
 
-        // Image handling
-        $targetDir = "../View/FRONT-OFFICE/img/";  // Adjust path if needed
-        $imageName = basename($_FILES["Image"]["name"]);
-        $targetFile = $targetDir . $imageName;
+        // Read image file content
+        $imageData = file_get_contents($_FILES["Image"]["tmp_name"]);
 
-        // Check if the file is a valid image
-        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-        $validExtensions = array("jpg", "jpeg", "png", "gif");
+        // Create product instance with BLOB image
+        $produit = new Produit(0, $imageData, $Nom, $Description, $Prix, $Quantite);
 
-        if (in_array($imageFileType, $validExtensions)) {
-            // Upload image
-            if (move_uploaded_file($_FILES["Image"]["tmp_name"], $targetFile)) {
-                $Image = "FRONT-OFFICE/img" . $imageName; // Store relative path in database
-                $produit = new Produit(0, $Image, $Nom, $Description, $Prix, $Quantite);
-                $produitC->addProduit($produit);
+        // Add the product to the database
+        $produitC->addProduit($produit);
 
-                header('Location: ListProduitBack.php');
-                exit();
-            } else {
-                $error = "Sorry, there was an error uploading your file.";
-            }
-        } else {
-            $error = "Invalid image format. Only JPG, JPEG, PNG, and GIF are allowed.";
-        }
+        header('Location: ListProduitBack.php');
+        exit();
+    } else {
+        $error = "Please fill all the fields and upload an image.";
     }
 }
 ?>
+
 
 <!-- Display error if any -->
 <?php if (!empty($error)) { echo "<div class='error'>$error</div>"; } ?>
