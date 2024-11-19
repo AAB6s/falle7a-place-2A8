@@ -428,36 +428,126 @@ if (
                         <?php } ?>
 
                         <form action="AddProduit.php" method="POST" enctype="multipart/form-data" class="forms-sample">
-                            <div class="form-group">
-                                <label for="Nom">Product Name</label>
-                                <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Product Name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Description">Description</label>
-                                <textarea class="form-control" id="Description" name="Description" placeholder="Description" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="Prix">Price</label>
-                                <input type="number" class="form-control" id="Prix" name="Prix" step="0.01" placeholder="Price" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Quantite">Quantity</label>
-                                <input type="number" class="form-control" id="Quantite" name="Quantite" placeholder="Quantity" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Image">Product Image</label>
-                                <input type="file" class="form-control" id="Image" name="Image" accept="image/*" required>
-                            </div>
+                         <div class="form-group">
+                        <label for="Nom">Product Name</label>
+                        <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Product Name">
+                     </div>
+                   <div class="form-group">
+                      <label for="Description">Description</label>
+                      <textarea class="form-control" id="Description" name="Description" placeholder="Description"></textarea>
+                    </div>
+                     <div class="form-group">
+                        <label for="Prix">Price</label>
+                       <input type="number" class="form-control" id="Prix" name="Prix" step="0.01" placeholder="Price">
+                     </div>
+    <div class="form-group">
+        <label for="Quantite">Quantity</label>
+        <input type="number" class="form-control" id="Quantite" name="Quantite" placeholder="Quantity">
+    </div>
+    <div class="form-group">
+        <label for="Image">Product Image</label>
+        <input type="file" class="form-control" id="Image" name="Image" accept="image/*">
+    </div>
 
-                            <button type="submit" class="btn btn-primary mr-2">Add Product</button>
-                            <button type="reset" class="btn btn-dark">Cancel</button>
-                        </form>
+    <button type="submit" class="btn btn-primary mr-2">Add Product</button>
+    <button type="reset" class="btn btn-dark">Cancel</button>
+    </form>
+        
 
                     </div>
                 </div>
             </div>
         </div>
     </div>
+           
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".forms-sample");
+
+        form.addEventListener("submit", function (event) {
+            let isValid = true;
+
+            // Réinitialisation des messages d'erreur
+            form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
+            form.querySelectorAll("input, textarea").forEach((input) => {
+                input.classList.remove("error", "success");
+            });
+
+            // Validation du champ "Nom"
+            const nom = form.querySelector("input[name='Nom']");
+            if (nom.value.trim() === "") {
+                isValid = false;
+                showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
+            } else {
+                showMessage(nom, "Nom valide.", true);
+            }
+
+            // Validation du champ "Image"
+            const image = form.querySelector("input[name='Image']");
+            if (image.value && !/\.(jpg|jpeg|png|gif)$/i.test(image.value)) {
+                isValid = false;
+                showMessage(image, "Le champ Image doit être un fichier valide (jpg, jpeg, png, gif).", false);
+            } else if (image.value) {
+                showMessage(image, "Image valide.", true);
+            }
+
+            // Validation du champ "Description"
+            const description = form.querySelector("textarea[name='Description']");
+            if (description.value.trim() === "") {
+                isValid = false;
+                showMessage(description, "Le champ Description ne peut pas être vide.", false);
+            } else {
+                showMessage(description, "Description valide.", true);
+            }
+
+            // Validation du champ "Prix"
+            const prix = form.querySelector("input[name='Prix']");
+            if (prix.value <= 0) {
+                isValid = false;
+                showMessage(prix, "Le champ Prix doit être supérieur à 0.", false);
+            } else {
+                showMessage(prix, "Prix valide.", true);
+            }
+
+            // Validation du champ "Quantité"
+            const quantite = form.querySelector("input[name='Quantite']");
+            if (quantite.value <= 0 || !Number.isInteger(parseFloat(quantite.value))) {
+                isValid = false;
+                showMessage(quantite, "Le champ Quantité doit être un entier positif.", false);
+            } else {
+                showMessage(quantite, "Quantité valide.", true);
+            }
+
+            // Empêche l'envoi du formulaire si des erreurs sont détectées
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+
+        function showMessage(input, message, isSuccess) {
+            const messageElement = document.createElement("span");
+            messageElement.textContent = message;
+            messageElement.classList.add("error-message");
+            messageElement.style.color = isSuccess ? "green" : "red";
+            input.classList.add(isSuccess ? "success" : "error");
+            input.insertAdjacentElement("afterend", messageElement);
+        }
+    });
+</script>
+<style>
+    .error {
+        border-color: red;
+    }
+
+    .success {
+        border-color: green;
+    }
+
+    .error-message {
+        font-size: 0.9rem;
+        margin-left: 5px;
+    }
+</style>
 
     <!-- Include Bootstrap JS for functionality -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
