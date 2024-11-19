@@ -378,75 +378,78 @@
 
                    <!-- ======= Order Management Section ======= -->
 
-<div class="card mt-4" id="request_service">
-    <div class="card-body">
-        <!-- Filter Controls -->
-        <div class="mb-3">
-            <form method="GET" action="">
-                <label for="status-filter" class="form-label text-white" style="font-weight: bold; font-size: 1.1em;">
-                    Filter by Status:
-                </label>
-                <div class="input-group" style="max-width: 250px;">
-                    <select name="status_filter" id="status-filter" class="form-select"
-                        style="background-color: #444; color: #fff; border: 1px solid #555;" onchange="this.form.submit()">
-                        <option value="all" <?= ($statusFilter === 'all') ? 'selected' : ''; ?>>All</option>
-                        <option value="pending" <?= ($statusFilter === 'pending') ? 'selected' : ''; ?>>Pending</option>
-                        <option value="approved" <?= ($statusFilter === 'approved') ? 'selected' : ''; ?>>Approved</option>
-                        <option value="disapproved" <?= ($statusFilter === 'disapproved') ? 'selected' : ''; ?>>Disapproved</option>
-                    </select>
+                   <div class="card mt-4" id="request_service">
+                    <div class="card-body">
+                        <!-- Filter Controls -->
+                        <div class="mb-3">
+                            <form method="GET" action="">
+                                <label for="status-filter" class="form-label text-white" style="font-weight: bold; font-size: 1.1em;">
+                                    Filter by Status:
+                                </label>
+                                <div class="input-group">
+                                    <select name="status_filter" id="status-filter" class="form-select"
+                                        style="background-color: #444; color: #fff; border: 1px solid #555;" onchange="this.form.submit()">
+                                        <option value="all" <?= ($statusFilter === 'all') ? 'selected' : ''; ?>>All</option>
+                                        <option value="pending" <?= ($statusFilter === 'pending') ? 'selected' : ''; ?>>Pending</option>
+                                        <option value="approved" <?= ($statusFilter === 'approved') ? 'selected' : ''; ?>>Approved</option>
+                                        <option value="disapproved" <?= ($statusFilter === 'disapproved') ? 'selected' : ''; ?>>Disapproved</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                
+                        <div class="card-body">
+                            <h4 class="card-title">Available Orders</h4>
+                
+                            <!-- Display Orders -->
+                            <?php if (empty($filteredRequests)) : ?>
+                                <div class="text-center">
+                                    <p>No service requests available.</p>
+                                </div>
+                            <?php else : ?>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Order ID</th>
+                                                <th>Client Name</th>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Order Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($filteredRequests as $order) : ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($order['order_id']); ?></td>
+                                                    <td><?= htmlspecialchars($order['client_name']); ?></td>
+                                                    <td><?= htmlspecialchars($order['product_name']); ?></td>
+                                                    <td><?= htmlspecialchars($order['quantity']); ?></td>
+                                                    <td><?= htmlspecialchars($order['order_date']); ?></td>
+                                                    <td>
+                                                        <!-- Button to increase quantity -->
+                                                        <form action="increase_quantity.php" method="POST" class="d-inline">
+                                                            <input type="hidden" name="order_id" value="<?= $order['order_id']; ?>">
+                                                            <button type="submit" class="btn btn-success btn-sm">Increase Quantity</button>
+                                                        </form>
+                
+                                                        <!-- Button to delete order -->
+                                                        <form action="delete_order.php" method="POST" class="d-inline">
+                                                            <input type="hidden" name="order_id" value="<?= $order['order_id']; ?>">
+                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
-            </form>
-        </div>
-
-        <div class="card-body">
-            <h4 class="card-title">Available Orders</h4>
-
-            <!-- Display Orders -->
-            <?php if (empty($filteredRequests)) : ?>
-                <div class="text-center">
-                    <p>No service requests available.</p>
-                </div>
-            <?php else : ?>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Client Name</th>
-                            <th>Product Name</th>
-                            <th>Quantity</th>
-                            <th>Order Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($filteredRequests as $order) : ?>
-                            <tr>
-                                <td><?= htmlspecialchars($order['order_id']); ?></td>
-                                <td><?= htmlspecialchars($order['client_name']); ?></td>
-                                <td><?= htmlspecialchars($order['product_name']); ?></td>
-                                <td><?= htmlspecialchars($order['quantity']); ?></td>
-                                <td><?= htmlspecialchars($order['order_date']); ?></td>
-                                <td>
-                                    <!-- Button to increase quantity -->
-                                    <form action="increase_quantity.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="order_id" value="<?= $order['order_id']; ?>">
-                                        <button type="submit" class="btn btn-success btn-sm">Increase Quantity</button>
-                                    </form>
-
-                                    <!-- Button to delete order -->
-                                    <form action="delete_order.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="order_id" value="<?= $order['order_id']; ?>">
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </div>
-    </div>
-</div>
+                
 
                                 <!-- Display orders in a flexbox layout -->
                                 

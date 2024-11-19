@@ -12,9 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Redirect back with success or failure message
     if ($deleted) {
-        header("Location: FrontEndCart.php?status=success&message=Order deleted successfully.");
+        header("Location: FrontEndCart.php?status=success");
     } else {
-        header("Location: FrontEndCart.php?status=danger&message=Failed to delete the order.");
+        header("Location: FrontEndCart.php?status=danger");
     }
     exit;
 }

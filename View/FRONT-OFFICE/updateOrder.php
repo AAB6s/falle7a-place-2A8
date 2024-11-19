@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Modify the quantity based on the action
     if ($action === 'increment') {
         $quantity++;
-    } elseif ($action === 'decrement' && $quantity > 1) {
+    } else if ($action === 'decrement' && $quantity > 1) {
         $quantity--;
     }
 
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $orderController->updateOrderQuantity($order_id, $quantity);
 
     // Redirect back to the cart page with a success message
-    header("Location: FrontEndCart.php?status=success&message=Quantity updated successfully.");
+    header("Location: FrontEndCart.php?status=success");
     exit;
 }
 ?>
