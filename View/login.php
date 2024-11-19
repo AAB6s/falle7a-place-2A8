@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="./styles/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper">
+        <span class="bg-animate">
+            <div class="bg-animate2"></div>
+        </span>
+        <div class="form-box login">
+            <h2 class="animation" style="--i:0;--j:21">Login</h2>
+            <form action="">
+                <div class="input-box animation" style="--i:1;--j:22">
+                    <input type="text" required>
+                    <label for="">Username</label>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box animation" style="--i:2;--j:23">
+                    <input type="password" required>
+                    <label for="">Password</label>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <button type="submit" class="btn animation" style="--i:3;--j:24">Login</button>
+                <div class="logreg-link animation" style="--i:4;--j:25">
+                    <p>Don't have an account? <a href="#" class="register-link">Sign Up</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="info-text login">
+            <h2 class="animation" style="--i:0; --j:20;">Welcome Back!</h2>
+            <p class="animation" style="--i:1; --j:21;">Discover the finest quality products to nurture your land and grow with nature!</p>
+        </div>
+        <div class="form-box register animation">
+            <h2 class="animation" style="--i:17; --j:0;">Sign Up</h2>
+            <form action="addUser.php" method="post">
+                <div class="input-box animation" style="--i:18 ;--j:1;">
+                    <input type="text" id="name" name="name" required>
+                    <label for="">Username</label>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box animation" style="--i:19;--j:2;">
+                    <input type="email" id="email" name="email" required>
+                    <label for="">Email</label>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+                <div class="input-box animation" style="--i:20;--j:3;">
+                    <input type="password" id="password" name="password" required>
+                    <label for="">Password</label>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <div class="input-box animation" style="--i:20;--j:3;">
+                    <input type="text" id="address" name="adress" required>
+                    <label for="">adress</label>
+                    <i class='bx bxs-location-plus' ></i>
+                </div>
+                <button type="submit" class="btn animation" style="--i:21;--j:4;" onclick="verif()">Sign Up</button>
+                <div class="logreg-link animation" style="--i:22;--j:5;">
+                    <p>Already have an account? <a href="#" class="login-link">Sign In</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="info-text register">
+            <h2 class="animation"style="--i:23;--j:6;">Welcome to Our Platform!</h2>
+            <p class="animation" style="--i:24;--j:7;">Discover the finest quality products to nurture your land and grow with nature!</p>
+        </div>
+    </div>
+    <script src="./js/script.js"></script>
+</body>
+</html>
