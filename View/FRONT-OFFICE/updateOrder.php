@@ -9,12 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantity = $_POST['quantity']; // Current quantity
     $action = $_POST['action'];
 
-    // Modify the quantity based on the action
-    if ($action === 'increment') {
-        $quantity++;
-    } else if ($action === 'decrement' && $quantity > 1) {
-        $quantity--;
-    }
 
     // Update the order in the database
     $orderController->updateOrderQuantity($order_id, $quantity);

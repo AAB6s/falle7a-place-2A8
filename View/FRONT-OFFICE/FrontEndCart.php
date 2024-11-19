@@ -4,14 +4,6 @@ require_once __DIR__ . '/../../Controller/OrderController.php';
 $orderController = new OrderController();
 $orders = $orderController->listOrders(); // Fetch updated orders from the database
 
-if (isset($_GET['status']) && isset($_GET['message'])) {
-    $status = htmlspecialchars($_GET['status']);
-    $message = htmlspecialchars($_GET['message']);
-    echo "<div style='padding: 10px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; 
-          background-color: " . ($status == 'success' ? '#d4edda' : '#f8d7da') . "; 
-          color: " . ($status == 'success' ? '#155724' : '#721c24') . ";'>
-          $message</div>";
-}
 ?>
 
 <!DOCTYPE html>
@@ -194,7 +186,6 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
                 <td style="padding: 12px; border: 1px solid #ddd;">
                   <form method="POST" action="updateOrder.php" style="display: inline;">
                     <input type="hidden" name="order_id" value="<?= $order['order_id']; ?>">
-                       <!-- Removed min attribute and added a JavaScript event handler -->
                        <input type="number" name="quantity" value="<?= htmlspecialchars($order['quantity']); ?>" 
                         style="padding: 6px; width: 60px; border: 1px solid #ddd; border-radius: 4px;" 
                         oninput="validateQuantity(this)">
@@ -232,11 +223,11 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
 </div>
 
 <script>
-    // JavaScript function to enforce the minimum value of 1 for quantity
+
     function validateQuantity(input) {
-        // Check if the value is less than 1
+
         if (input.value < 1) {
-            // If so, set it to 1
+
             input.value = 1;
         }
     }
@@ -265,12 +256,12 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
       // AJAX to get the order count and update the cart icon
       function updateCartCount() {
           $.ajax({
-              url: 'getOrderCount.php',  // Adjust path as needed
+              url: 'getOrderCount.php',
               type: 'GET',
               dataType: 'json',
               success: function(response) {
                   if (response.orderCount !== undefined) {
-                      $('#cart-count').text(response.orderCount);  // Update cart count
+                      $('#cart-count').text(response.orderCount);
                   } else {
                       console.log("Error: orderCount is undefined.");
                   }
@@ -281,7 +272,6 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
           });
       }
 
-      // Call the function to update the cart count when the page loads
       $(document).ready(function() {
           updateCartCount();
       });
