@@ -27,13 +27,10 @@ if (
         $Prix = $_POST['Prix'];
         $Quantite = $_POST['Quantite'];
 
-        // Read image file content
         $imageData = file_get_contents($_FILES["Image"]["tmp_name"]);
 
-        // Create product instance with BLOB image
         $produit = new Produit(0, $imageData, $Nom, $Description, $Prix, $Quantite);
 
-        // Add the product to the database
         $produitC->addProduit($produit);
 
         header('Location: ListProduitBack.php');
@@ -86,7 +83,7 @@ if (
                 </div>
                 <div class="profile-name">
                   <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
-                  <span>Gold Member</span>
+                  <span>Admin</span>
                 </div>
               </div>
               <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>

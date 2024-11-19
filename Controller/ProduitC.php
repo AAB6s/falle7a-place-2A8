@@ -56,5 +56,41 @@ class ProduitC
             die('Error: ' . $e->getMessage());
         }
     }
+    public function updateProduit($id, Produit $produit)
+    {
+        try {
+            $query = "UPDATE produit 
+                      SET Image = :Image, Nom = :Nom, Description = :Description, Prix = :Prix, Quantite = :Quantite 
+                      WHERE Id_Produit = :Id_Produit";
+
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindValue(':Image', $produit->Image);
+            $stmt->bindValue(':Nom', $produit->Nom);
+            $stmt->bindValue(':Description', $produit->Description);
+            $stmt->bindValue(':Prix', $produit->Prix);
+            $stmt->bindValue(':Quantite', $produit->Quantite);
+            $stmt->bindValue(':Id_Produit', $id);
+
+            $stmt->execute();
+            echo $stmt->rowCount() . " row(s) updated"; 
+        } catch (PDOException $e) {
+            echo "Erreur : " . $e->getMessage();
+        }
+    }
+    public function getProduitById($id)
+{
+    try {
+        $query = "SELECT * FROM produit WHERE Id_Produit = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Erreur : " . $e->getMessage();
+        return null;
+    }
+}
+
 }
 ?>
+
