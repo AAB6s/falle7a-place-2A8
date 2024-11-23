@@ -93,17 +93,18 @@ class CategorieC {
     }
 
     
-    public function AfficherId_produit()
-    {
-        $sql = "SELECT Id_produit FROM produit";
+    public function AfficherNom_produit() {
+        $sql = "SELECT Id_produit, Nom FROM produit"; 
         $db = config::getConnexion();
         try {
-            $list_Id_produit = $db->query($sql);
-            return $list_Id_produit;
+            $list_Nom_produit = $db->query($sql);
+            return $list_Nom_produit->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             die('Error: ' . $e->getMessage());
         }
     }
+    
+    
 
 }
 ?>
