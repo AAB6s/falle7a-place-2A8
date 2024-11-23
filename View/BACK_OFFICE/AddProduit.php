@@ -1,6 +1,5 @@
 <?php 
-include '../Controller/produitC.php';
-include_once '../Model/produit.php';
+require_once __DIR__ .'/../../Controller/produitC.php';
 
 $error = "";
 

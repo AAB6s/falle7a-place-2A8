@@ -1,74 +1,86 @@
-<?php 
-include '../Controller/produitC.php';
-include_once '../Model/produit.php';
+<?php
+require_once __DIR__ .'/../../Controller/produitC.php';
 
 $error = "";
-
-
 $produitC = new ProduitC();
 
+if (isset($_GET['Id_Produit'])) {
+    $Id_Produit = intval($_GET['Id_Produit']);
+    $produit = $produitC->getProduitById($Id_Produit);
+    if (!$produit) {
+        $error = "Produit non trouvé.";
+    }
+}
+
 if (
-    isset($_POST["Nom"]) &&
-    isset($_POST["Description"]) &&
-    isset($_POST["Prix"]) &&
-    isset($_POST["Quantite"]) &&
-    isset($_FILES["Image"]) 
+    isset($_POST["Nom"], $_POST["Description"], $_POST["Prix"], $_POST["Quantite"])
 ) {
     if (
         !empty($_POST["Nom"]) &&
         !empty($_POST["Description"]) &&
         !empty($_POST["Prix"]) &&
-        !empty($_POST["Quantite"]) &&
-        !empty($_FILES["Image"]["tmp_name"]) 
+        !empty($_POST["Quantite"])
     ) {
-        
         $Nom = $_POST['Nom'];
         $Description = $_POST['Description'];
-        $Prix = $_POST['Prix'];
-        $Quantite = $_POST['Quantite'];
+        $Prix = floatval($_POST['Prix']);
+        $Quantite = intval($_POST['Quantite']);
 
-        $imageData = file_get_contents($_FILES["Image"]["tmp_name"]);
+        if (!empty($_FILES["Image"]["tmp_name"])) {
+            $targetDir = "uploads/";
+            $imageName = basename($_FILES["Image"]["name"]);
+            $targetFilePath = $targetDir . $imageName;
+        
+            $fileType = mime_content_type($_FILES["Image"]["tmp_name"]);
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        
+            if (in_array($fileType, $allowedTypes)) {
+                if (!empty($produit['Image']) && file_exists($produit['Image'])) {
+                    unlink($produit['Image']);
+                }
+        
+                if (move_uploaded_file($_FILES["Image"]["tmp_name"], $targetFilePath)) {
+                    $Image = $targetFilePath; 
+                } else {
+                    $error = "Erreur lors du téléchargement de l'image.";
+                    $Image = $produit['Image']; 
+                }
+            } else {
+                $error = "Type de fichier non supporté. Veuillez uploader une image (jpeg, png, gif).";
+                $Image = $produit['Image']; 
+            }
+        } else {
+            $Image = $produit['Image']; 
+        }
+        
 
-        $produit = new Produit(0, $imageData, $Nom, $Description, $Prix, $Quantite);
+      
+        $produitUpdated = new Produit($Id_Produit, $Image, $Nom, $Description, $Prix, $Quantite);
+        $produitC->updateProduit($Id_Produit, $produitUpdated);
 
-        $produitC->addProduit($produit);
-
+        // Redirection après mise à jour
         header('Location: ListProduitBack.php');
         exit();
     } else {
-        $error = "Please fill all the fields and upload an image.";
+        $error = "Veuillez remplir tous les champs.";
     }
 }
 ?>
 
-
-
-<?php if (!empty($error)) { echo "<div class='error'>$error</div>"; } ?>
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
+<head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Falle7a</title>
-    <!-- plugins:css -->
+    <meta name="viewport" content="wId_Produitth=device-wId_Produitth, initial-scale=1, shrink-to-fit=no">
+    <title>Modifier Produit - Falle7a</title>
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
     <link rel="stylesheet" href="BACK_OFFICE/assets/css/style.css">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png" />
-  </head>
-  <body>
-    <div class="container-scroller">
-      <!-- partial:BACK_OFFICE/partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png">
+</head>
+<body>
+<div class="container-scroller">
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
           <a class="sidebar-brand brand-logo" href="BACK_OFFICE/index.html"><img src="BACK_OFFICE/assets/images/logo.svg" alt="logo" /></a>
           <a class="sidebar-brand brand-logo-mini" href="BACK_OFFICE/index.html"><img src="BACK_OFFICE/assets/images/logo-mini.svg" alt="logo" /></a>
@@ -405,7 +417,7 @@ if (
             </button>
           </div>
         </nav>
-        <!-- partial -->
+          <!-- partial -->
       <div class="main-panel">
           <div class="content-wrapper">
             <div class="page-header">
@@ -417,50 +429,52 @@ if (
                 </ol>
               </nav>
             </div>
-      
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-
-                        <!-- Display error message if any -->
-                        <?php if (!empty($error)) { ?>
-                            <div style="color: red;"><?php echo $error; ?></div>
-                        <?php } ?>
-
-                        <form action="AddProduit.php" method="POST" enctype="multipart/form-data" class="forms-sample">
-                         <div class="form-group">
-                        <label for="Nom">Product Name</label>
-                        <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Product Name">
-                     </div>
-                   <div class="form-group">
-                      <label for="Description">Description</label>
-                      <textarea class="form-control" id="Description" name="Description" placeholder="Description"></textarea>
-                    </div>
-                     <div class="form-group">
-                        <label for="Prix">Price</label>
-                       <input type="number" class="form-control" id="Prix" name="Prix" step="0.01" placeholder="Price">
-                     </div>
-    <div class="form-group">
-        <label for="Quantite">Quantity</label>
-        <input type="number" class="form-control" id="Quantite" name="Quantite" placeholder="Quantity">
-    </div>
-    <div class="form-group">
-        <label for="Image">Product Image</label>
-        <input type="file" class="form-control" id="Image" name="Image" accept="image/*">
-    </div>
-
-    <button type="submit" class="btn btn-primary mr-2">Add Product</button>
-    <button type="reset" class="btn btn-dark">Cancel</button>
-    </form>
-        
-
-                    </div>
+    <!-- Formulaire de modification -->
+    <div class="col-md-6 grId_Produit-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Modifier Produit</h4>
+                <div Id_Produit="error" style="color:red;">
+                    <?php echo $error; ?>
                 </div>
+                <?php if ($produit): ?>
+                    <form class="forms-sample" action="" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="Nom">Nom du Produit</label>
+        <input type="text" class="form-control" id="Nom" name="Nom" value="<?php echo htmlspecialchars($produit['Nom']); ?>">
+    </div>
+    <div class="form-group">
+        <label for="Image">Image</label>
+        <input type="file" class="form-control" id="Image" name="Image">
+
+        
+        <small>Image actuelle :<img class="img-fluid"
+                     src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
+                   ></small>
+    </div>
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <textarea class="form-control" id="Description" name="Description" rows="4"><?php echo htmlspecialchars($produit['Description']); ?></textarea>
+    </div>
+    <div class="form-group">
+        <label for="Prix">Prix</label>
+        <input type="number" class="form-control" id="Prix" name="Prix" value="<?php echo htmlspecialchars($produit['Prix']); ?>">
+    </div>
+    <div class="form-group">
+        <label for="Quantite">Quantité</label>
+        <input type="number" class="form-control" id="Quantite" name="Quantite" value="<?php echo htmlspecialchars($produit['Quantite']); ?>">
+    </div>
+    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+</form>
+
+                <?php else: ?>
+                    <p>Produit introuvable.</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
-           
-    <script>
+</div>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.querySelector(".forms-sample");
 
@@ -534,6 +548,7 @@ if (
         }
     });
 </script>
+
 <style>
     .error {
         border-color: red;
@@ -549,9 +564,8 @@ if (
     }
 </style>
 
-    <!-- Include Bootstrap JS for functionality -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="BACK_OFFICE/assets/vendors/js/vendor.bundle.base.js"></script>
+<script src="BACK_OFFICE/assets/js/off-canvas.js"></script>
+<script src="BACK_OFFICE/assets/js/misc.js"></script>
 </body>
 </html>
