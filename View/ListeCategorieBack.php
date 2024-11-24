@@ -444,7 +444,11 @@ if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
                                           <button class="btn btn-warning btn-sm">Modifier</button>
 
                                         <!-- Bouton Supprimer -->
-                                             <button class="btn btn-danger btn-sm">Supprimer</button>
+
+                                             <a href="delete_categorie.php?id_Categorie=<?= htmlspecialchars($categorie['id_Categorie']); ?>" 
+                                           onclick="return confirm('Are you sure you want to delete this categorie?');" 
+                                           class="btn btn-danger btn-sm">Supprimer</a>
+
                                     </td>
 
                                 </tr>
