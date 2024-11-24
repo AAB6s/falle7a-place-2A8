@@ -2,6 +2,16 @@
 include '../Controller/ProduitC.php';
 $produitC = new ProduitC();
 $list = $produitC->AfficherProduit();
+
+// Récupérer le nom de la catégorie depuis la requête GET
+$nomCategorie = isset($_GET['categorie']) ? $_GET['categorie'] : null;
+
+// Récupérer la liste des produits selon la catégorie
+if ($nomCategorie) {
+    $list = $produitC->AfficherProduitParNomCategorie($nomCategorie);
+} else {
+    $list = $produitC->AfficherProduit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,77 +66,86 @@ $list = $produitC->AfficherProduit();
     </div>
     <!-- Page Header End -->
 
-    <!-- Product Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-0 gx-5 align-items-end">
-                <div class="col-lg-6">
-                    <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-                        <h1 class="display-5 mb-3">Our Products</h1>
-                        <p>Our products are organic, sourced directly from the farm to ensure the highest quality and freshness.</p>
+   <!-- Product Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-0 gx-5 align-items-end">
+            <div class="col-lg-6">
+                <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                    <h1 class="display-5 mb-3">Our Products</h1>
+                    <p>Our products are organic, sourced directly from the farm to ensure the highest quality and freshness.</p>
+                </div>
+            </div>
+            <div class="col-lg-6 text-start text-lg-end wow slideInRight" data-wow-delay="0.1s">
+    <ul class="nav nav-pills d-inline-flex justify-content-end gap-2 mb-5">
+        <li class="nav-item">
+            <a class="btn btn-outline-primary border-2 <?php echo ($nomCategorie === 'Vegetables') ? 'active' : ''; ?>" 
+               href="ListeProduits.php?categorie=Vegetables">Vegetables</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-outline-primary border-2 <?php echo ($nomCategorie === 'Fruits') ? 'active' : ''; ?>" 
+               href="ListeProduits.php?categorie=Fruits">Fruits</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-outline-primary border-2 <?php echo ($nomCategorie === 'Other') ? 'active' : ''; ?>" 
+               href="ListeProduits.php?categorie=Other">Other Products</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-outline-primary border-2 <?php echo is_null($nomCategorie) ? 'active' : ''; ?>" 
+               href="ListeProduits.php">All Products</a>
+        </li>
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <style>
+                .product-item img {
+                    height: 220px; 
+                    object-fit: cover; 
+                    width: 100%; 
+                }
+            </style>
+
+            <?php foreach ($list as $produit) { ?>
+                <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="product-item">
+                        <div class="position-relative bg-light overflow-hidden">
+                            <!-- Convert BLOB to Base64 -->
+                            <img class="img-fluid"
+                                 src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
+                                 alt="<?php echo htmlspecialchars($produit['Nom']); ?>">
+                            <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
+                        </div>
+                        <div class="text-center p-4">
+                            <!-- Display product name -->
+                            <a class="d-block h5 mb-2" href="#"><?php echo htmlspecialchars($produit['Nom']); ?></a>
+                            
+                            <!-- Display product description -->
+                            <p class="text-muted mb-2"><?php echo htmlspecialchars($produit['Description']); ?></p>
+                            
+                            <!-- Display product price -->
+                            <span class="text-primary me-1"><?php echo htmlspecialchars($produit['Prix']); ?> dt</span>
+                        </div>
+                        <div class="d-flex border-top">
+                            <small class="w-50 text-center border-end py-2">
+                                <a class="text-body" href="ViewProduct.php?id=<?php echo htmlspecialchars($produit['Id_Produit']); ?>">
+                                    <i class="fa fa-eye text-primary me-2"></i>View detail
+                                </a>
+                            </small>
+                            <small class="w-50 text-center py-2">
+                                <a class="text-body" href="AddToCart.php?id=<?php echo htmlspecialchars($produit['Id_Produit']); ?>">
+                                    <i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart
+                                </a>
+                            </small>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6 text-start text-lg-end wow slideInRight" data-wow-delay="0.1s">
-                    <ul class="nav nav-pills d-inline-flex justify-content-end mb-5">
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-primary border-2 active" data-bs-toggle="pill" href="#tab-1">Vegetables</a>
-                        </li>
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-2">Fruits</a>
-                        </li>
-                        <li class="nav-item me-0">
-                            <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-3">Other Products</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <style>
- 
- .product-item img {
-        height: 220px; 
-        object-fit: cover; 
-        width: 100%; 
-    }
-</style>
-
-<?php foreach ($list as $produit) { ?>
-    <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-        <div class="product-item">
-            <div class="position-relative bg-light overflow-hidden">
-                <!-- Convert BLOB to Base64 -->
-                <img class="img-fluid"
-                     src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
-                     alt="<?php echo htmlspecialchars($produit['Nom']); ?>">
-                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
-            </div>
-            <div class="text-center p-4">
-                <!-- Display product name -->
-                <a class="d-block h5 mb-2" href="#"><?php echo htmlspecialchars($produit['Nom']); ?></a>
-                
-                <!-- Display product description -->
-                <p class="text-muted mb-2"><?php echo htmlspecialchars($produit['Description']); ?></p>
-                
-                <!-- Display product price -->
-                <span class="text-primary me-1"><?php echo htmlspecialchars($produit['Prix']); ?> dt</span>
-            </div>
-            <div class="d-flex border-top">
-                <small class="w-50 text-center border-end py-2">
-                    <a class="text-body" href="ViewProduct.php?id=<?php echo htmlspecialchars($produit['Id_Produit']); ?>">
-                        <i class="fa fa-eye text-primary me-2"></i>View detail
-                    </a>
-                </small>
-                <small class="w-50 text-center py-2">
-                    <a class="text-body" href="AddToCart.php?id=<?php echo htmlspecialchars($produit['Id_Produit']); ?>">
-                        <i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart
-                    </a>
-                </small>
-            </div>
+            <?php } ?>
         </div>
     </div>
-<?php } ?>
-
-    <!-- Product End -->
+</div>
+<!-- Product End -->
 
 
 

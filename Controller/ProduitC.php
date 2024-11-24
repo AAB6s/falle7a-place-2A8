@@ -90,6 +90,20 @@ class ProduitC
         return null;
     }
 }
+public function AfficherProduitParNomCategorie($nomCategorie) {
+    $sql = "SELECT p.* FROM produit p 
+            INNER JOIN categorie c ON p.Id_Produit = c.Id_produit 
+            WHERE c.Nom = :nomCategorie";
+    $db = config::getConnexion();
+    try {
+        $req = $db->prepare($sql);
+        $req->bindValue(':nomCategorie', $nomCategorie);
+        $req->execute();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        die('Erreur: ' . $e->getMessage());
+    }
+}
 
 }
 ?>
