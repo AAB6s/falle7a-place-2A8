@@ -1,3 +1,63 @@
+<?php
+require_once __DIR__ . '/../../Config.php';
+
+try {
+    $pdo = Config::getConnexion();
+
+    // Fetch filter values
+    $search = $_GET['search'] ?? '';
+    $statusFilter = $_GET['status_filter'] ?? 'all';
+
+    // Build the query dynamically based on filters
+    $query = "SELECT * FROM transaction WHERE 1=1";
+    if (!empty($search)) {
+        $query .= " AND full_name LIKE :search";
+    }
+    if ($statusFilter !== 'all') {
+        $query .= " AND status = :status";
+    }
+    $stmt = $pdo->prepare($query);
+
+    // Bind parameters
+    if (!empty($search)) {
+        $stmt->bindValue(':search', '%' . $search . '%');
+    }
+    if ($statusFilter !== 'all') {
+        $stmt->bindValue(':status', $statusFilter);
+    }
+
+    $stmt->execute();
+    $transaction = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    die("Error fetching transaction: " . $e->getMessage());
+}
+
+// Handle status updates
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_POST['action'])) {
+    $transactionId = $_POST['transaction_id'];
+    $action = $_POST['action'];
+
+    if ($action === 'deliver') {
+        $status = 'delivered';
+    } elseif ($action === 'cancel') {
+        $status = 'canceled';
+    }
+
+    $query = "UPDATE transaction SET status = :status WHERE transaction_id = :transaction_id";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([
+        ':status' => $status,
+        ':transaction_id' => $transactionId
+    ]);
+
+    // Refresh the page to show updated data
+    header('Location: Orders.php');
+    exit;
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -367,7 +427,7 @@
             <div class="main-panel">
                 <!-- Main Content Wrapper -->
                 <div class="content-wrapper">
-                    <?php if (!isset($_GET['update_id'])) : ?>
+                <?php if (!isset($_GET['update_id'])) : ?>
                     <!-- ======= Service Management Section ======= -->
                     <div class="page-header">
                         <h3 class="page-title" style="color: white;">
@@ -376,90 +436,217 @@
                     </div>
 
 
-                   <!-- ======= Order Management Section ======= -->
+                    <div class="container">
+        <h1>Transaction Management</h1>
 
-                   <div class="card mt-4" id="request_service">
-                    <div class="card-body">
-                        <!-- Filter Controls -->
-                        <div class="mb-3">
-                            <form method="GET" action="">
-                                <label for="status-filter" class="form-label text-white" style="font-weight: bold; font-size: 1.1em;">
-                                    Filter by Status:
+        <!-- Filter and Search Form -->
+        <div class="form-inline">
+            <form method="GET" action="">
+                <input type="text" name="search" placeholder="Search by full name" value="<?= htmlspecialchars($search); ?>">
+                <select name="status_filter">
+                    <option value="all" <?= $statusFilter === 'all' ? 'selected' : ''; ?>>All</option>
+                    <option value="in progress" <?= $statusFilter === 'in progress' ? 'selected' : ''; ?>>In Progress</option>
+                    <option value="delivered" <?= $statusFilter === 'delivered' ? 'selected' : ''; ?>>Delivered</option>
+                    <option value="canceled" <?= $statusFilter === 'canceled' ? 'selected' : ''; ?>>Canceled</option>
+                </select>
+                <button type="submit" class="btn-filter">Filter</button>
+            </form>
+        </div>
+
+        <!-- Display Transactions -->
+        <?php if (empty($transaction)) : ?>
+            <p>No transaction found.</p>
+        <?php else : ?>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Full Name</th>
+                            <th>Phone Number</th>
+                            <th>Delivery Address</th>
+                            <th>Products Purchased</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($transaction as $transaction) : ?>
+                            <tr>
+                                <td><?= htmlspecialchars($transaction['transaction_id']); ?></td>
+                                <td>
+                                    <form method="POST" action="Orders.php">
+                                        <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction['transaction_id']); ?>">
+                                        <button type="submit" name="action" value="deliver" class="btn btn-success">Send Delivery</button>
+                                        <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Delivery</button>
+                                    </form>
+                                </td>
+
+                                <td><?= htmlspecialchars($transaction['full_name']); ?></td>
+                                <td><?= htmlspecialchars($transaction['phone_number']); ?></td>
+                                <td><?= htmlspecialchars($transaction['delivery_address']); ?></td>
+                                <td>
+                                    <?php
+                                    $products = json_decode($transaction['product_details'], true);
+                                    if ($products) {
+                                        echo "<ul style='margin: 0; padding-left: 15px;'>";
+                                        foreach ($products as $product) {
+                                            echo "<li>" . htmlspecialchars($product['name']) . " - " .
+                                                htmlspecialchars($product['quantity']) . " pcs @ " .
+                                                htmlspecialchars(number_format($product['price'], 2)) . " TND each</li>";
+                                        }
+                                        echo "</ul>";
+                                    } else {
+                                        echo "No products found.";
+                                    }
+                                    ?>
+                                </td>
+                                <td><?= htmlspecialchars($transaction['status']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </div>  
+
+    <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Order Status</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
                                 </label>
-                                <div class="input-group">
-                                    <select name="status_filter" id="status-filter" class="form-select"
-                                        style="background-color: #444; color: #fff; border: 1px solid #555;" onchange="this.form.submit()">
-                                        <option value="all" <?= ($statusFilter === 'all') ? 'selected' : ''; ?>>All</option>
-                                        <option value="pending" <?= ($statusFilter === 'pending') ? 'selected' : ''; ?>>Pending</option>
-                                        <option value="approved" <?= ($statusFilter === 'approved') ? 'selected' : ''; ?>>Approved</option>
-                                        <option value="disapproved" <?= ($statusFilter === 'disapproved') ? 'selected' : ''; ?>>Disapproved</option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                
-                        <div class="card-body">
-                            <h4 class="card-title">Available Orders</h4>
-                
-                            <!-- Display Orders -->
-                            <?php if (empty($filteredRequests)) : ?>
-                                <div class="text-center">
-                                    <p>No service requests available.</p>
-                                </div>
-                            <?php else : ?>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th>Order ID</th>
-                                                <th>Client Name</th>
-                                                <th>Product Name</th>
-                                                <th>Quantity</th>
-                                                <th>Order Date</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($filteredRequests as $order) : ?>
-                                                <tr>
-                                                    <td><?= htmlspecialchars($order['order_id']); ?></td>
-                                                    <td><?= htmlspecialchars($order['client_name']); ?></td>
-                                                    <td><?= htmlspecialchars($order['product_name']); ?></td>
-                                                    <td><?= htmlspecialchars($order['quantity']); ?></td>
-                                                    <td><?= htmlspecialchars($order['order_date']); ?></td>
-                                                    <td>
-                                                        <!-- Button to increase quantity -->
-                                                        <form action="increase_quantity.php" method="POST" class="d-inline">
-                                                            <input type="hidden" name="order_id" value="<?= $order['order_id']; ?>">
-                                                            <button type="submit" class="btn btn-success btn-sm">Increase Quantity</button>
-                                                        </form>
-                
-                                                        <!-- Button to delete order -->
-                                                        <form action="delete_order.php" method="POST" class="d-inline">
-                                                            <input type="hidden" name="order_id" value="<?= $order['order_id']; ?>">
-                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+                              </div>
+                            </th>
+                            <th> Client Name </th>
+                            <th> Order No </th>
+                            <th> Product Cost </th>
+                            <th> Project </th>
+                            <th> Payment Mode </th>
+                            <th> Start Date </th>
+                            <th> Payment Status </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face1.jpg" alt="image" />
+                              <span class="pl-2">Henry Klein</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> Dashboard </td>
+                            <td> Credit card </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-success">Approved</div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face2.jpg" alt="image" />
+                              <span class="pl-2">Estella Bryan</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> Website </td>
+                            <td> Cash on delivered </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-warning">Pending</div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face5.jpg" alt="image" />
+                              <span class="pl-2">Lucy Abbott</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> App design </td>
+                            <td> Credit card </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-danger">Rejected</div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face3.jpg" alt="image" />
+                              <span class="pl-2">Peter Gill</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> Development </td>
+                            <td> Online Payment </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-success">Approved</div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face4.jpg" alt="image" />
+                              <span class="pl-2">Sallie Reyes</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> Website </td>
+                            <td> Credit card </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-success">Approved</div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
+                  </div>
                 </div>
-                
-
-                                <!-- Display orders in a flexbox layout -->
-                                
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                    <?php else: ?>
-                    
-
+              </div>
+            </div>
                     <!-- ======= Footer ======= -->
                     <footer class="footer">
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -500,7 +687,5 @@
         <script src="assets/js/dashboard.js"></script>
         <!-- End custom js for this page -->
     </div>
+    <?php endif;?>
 </body>
-
-
-</html>

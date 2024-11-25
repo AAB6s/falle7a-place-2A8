@@ -134,7 +134,7 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
             <a class="btn-sm-square bg-white rounded-circle ms-3" href="#">
               <small class="fa fa-user text-body"></small>
             </a>
-            <a class="btn-sm-square bg-white rounded-circle ms-3" href="#">
+            <a class="btn-sm-square bg-white rounded-circle ms-3" href="cart.html">
               <small class="fa fa-shopping-bag text-body"></small>
               <span id="cart-count" style="position: absolute; right: 40px; background-color: red; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; border-radius: 50%; color: #fff; top: 60%; margin-bottom:100px;">0</span>
             </a>
@@ -163,7 +163,8 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
       </div>
     </div>
     <!-- Page Header End -->
-    <div style="max-width: 1200px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; 
+    <div class ="wow fadeInUp"
+      data-wow-delay="0.1s"style="max-width: 1200px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; 
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
     <h1 style="text-align: center; color: #333;">Orders Manager</h1>
    
@@ -215,14 +216,113 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
     </table>
     <br>
     <div align="right">
-      <form action="checkOut.php"> <button type="submit" style="padding: 6px 12px; border: none; background-color: #007bff; color: white; border-radius: 4px; cursor: pointer; transition: transform 0.3s;">
-      Check Out
-    </button></form>
-    </div>
+    <form action="checkOut.php">
+        <button id="checkoutBtn" type="submit" style="padding: 6px 12px; border: none; background-color: #007bff; color: white; border-radius: 4px; cursor: pointer; transition: transform 0.3s;">
+            Check Out
+        </button>
+    </form>
+</div>
     
 </div>
-<!-- Footer Start -->
-<div
+<!-- Reviews Start -->
+<div class="container-xxl py-5">
+      <div class="container">
+        <div
+          class="section-header text-center mx-auto mb-5 wow fadeInUp"
+          data-wow-delay="0.1s"
+          style="max-width: 500px"
+        >
+          <h1 class="display-5 mb-3">Customer Review</h1>
+          <p>See what our clients have to say about our services.</p>
+        </div>
+        <div
+          class="owl-carousel testimonial-carousel wow fadeInUp"
+          data-wow-delay="0.1s"
+        >
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              The service was exceptional and the team was very professional.
+              Highly recommended!
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-1.jpg"
+                alt="Client Image"
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">John Doe</h5>
+                <span>Project Manager</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              Amazing experience! I’m very pleased with the service provided.
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-2.jpg"
+                alt="Client Image"
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">Sarah Lee</h5>
+                <span>Entrepreneur</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              I will definitely be using their services again in the future.
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-3.jpg"
+                alt="Client Image"
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">Michael Smith</h5>
+                <span>Freelancer</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              The team was highly responsive and catered to all my requirements.
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-4.jpg"
+                alt="Client Image"
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">Emma Johnson</h5>
+                <span>Software Engineer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Reviews End -->
+
+    <!-- Footer Start -->
+    <div
       class="container-fluid bg-dark footer mt-5 pt-5 wow fadeIn"
       data-wow-delay="0.1s"
     >
@@ -236,8 +336,7 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
               FALLE<span class="text-secondary">7</span>A
             </h1>
             <p>
-              Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat
-              ipsum et lorem et sit, sed stet lorem sit clita
+              Fallla7a is good
             </p>
             <div class="d-flex pt-2">
               <a
@@ -324,29 +423,42 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
 
 
     <script>
-      // AJAX to get the order count and update the cart icon
-      function updateCartCount() {
-          $.ajax({
-              url: 'getOrderCount.php',
-              type: 'GET',
-              dataType: 'json',
-              success: function(response) {
-                  if (response.orderCount !== undefined) {
-                      $('#cart-count').text(response.orderCount);
-                  } else {
-                      console.log("Error: orderCount is undefined.");
-                  }
-              },
-              error: function(xhr, status, error) {
-                  console.error("AJAX request failed:", status, error);
-              }
-          });
-      }
+    // AJAX to get the order count and update the cart icon
+    function updateCartCount() {
+        $.ajax({
+            url: 'getOrderCount.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.orderCount !== undefined) {
+                    $('#cart-count').text(response.orderCount);
+                    
+                    // Disable the checkout button if orderCount is less than 1
+                    if (response.orderCount < 1) {
+                        $('#checkoutBtn').prop('disabled', true).css({
+                            'background-color': '#ccc',
+                            'cursor': 'not-allowed'
+                        });
+                    } else {
+                        $('#checkoutBtn').prop('disabled', false).css({
+                            'background-color': '#007bff',
+                            'cursor': 'pointer'
+                        });
+                    }
+                } else {
+                    console.log("Error: orderCount is undefined.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed:", status, error);
+            }
+        });
+    }
 
-      $(document).ready(function() {
-          updateCartCount();
-      });
-  </script>
+    $(document).ready(function() {
+        updateCartCount();
+    });
+</script>
 
 
    

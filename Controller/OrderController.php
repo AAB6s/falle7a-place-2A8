@@ -67,6 +67,23 @@ class OrderController
             die('Error: ' . $e->getMessage());
         }
     }
+    public function addProductToCart($client_id, $product_id, $quantity) {
+        try {
+            $pdo = Config::getConnexion();
+            $stmt = $pdo->prepare("
+                INSERT INTO `orders` (`order_id`, `client_id`, `product_id`, `quantity`, `order_date`) 
+                VALUES (NULL, :client_id, :product_id, :quantity, NOW())
+            ");
+            $stmt->execute([
+                'client_id' => $client_id,
+                'product_id' => $product_id,
+                'quantity' => $quantity
+            ]);
+            return "Product added to cart successfully!";
+        } catch (Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+    }
 
 }
 ?>
