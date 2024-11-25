@@ -430,14 +430,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Id_produit"], $_POST[
             id="Nom" 
             name="Nom" 
             value="<?php echo htmlspecialchars($categorie['Nom'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" 
-            placeholder="Nom de la catégorie" 
-            required
+            placeholder="Nom de la catégorie"
         >
     </div>
 
     <div class="form-group">
         <label for="Id_produit">Nom du Produit :</label>
-        <select class="form-control" id="Id_produit" name="Id_produit" required>
+        <select class="form-control" id="Id_produit" name="Id_produit">
             <?php foreach ($list_Nom_produit as $product): ?>
                 <option 
                     value="<?php echo htmlspecialchars($product['Id_produit'], ENT_QUOTES, 'UTF-8'); ?>" 
@@ -451,6 +450,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Id_produit"], $_POST[
 
     <button type="submit" class="btn btn-primary mr-2">Modifier la Catégorie</button>
 </form>
+
 
 
 <!-- JavaScript pour gérer la liste des produits -->
