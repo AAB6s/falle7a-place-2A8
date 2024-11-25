@@ -66,15 +66,15 @@ class CategorieC {
             );
             $query->execute([
                 'id_Categorie' => $id_Categorie,
-                'Nom' => $Categorie->getCategorie(), 
+                'Nom' => $Categorie->getNom(),  // Assurez-vous d'utiliser getNom() et non getCategorie()
                 'Id_produit' => $Categorie->getId_produit()
             ]);
-            echo $query->rowCount() . " records UPDATED successfully <br>";
+            echo $query->rowCount() . " record(s) UPDATED successfully <br>";
         } catch (PDOException $e) {
             echo 'Error: ' . $e->getMessage();
         }
     }
-
+    
    
     function showCategorie($id_Categorie)
     {
@@ -104,7 +104,29 @@ class CategorieC {
         }
     }
     
+
+    private $db;
+
+    public function __construct() {
+        // Initialisez votre connexion à la base de données ici
+        $this->db = config::getConnexion(); // ou votre méthode pour obtenir une connexion
+    }
+
+    public function getCategorieById($id_Categorie) {
+        try {
+            $query = $this->db->prepare("SELECT * FROM categorie WHERE id_Categorie = :id_Categorie");
+            $query->bindParam(':id_Categorie', $id_Categorie, PDO::PARAM_INT);
+            $query->execute();
+
+            return $query->fetch(PDO::FETCH_ASSOC); // Retourne les informations de la catégorie
+        } catch (Exception $e) {
+            die('Erreur: ' . $e->getMessage());
+        }
+    }
+
+    // Les autres méthodes de votre classe...
+}
     
 
-}
+
 ?>

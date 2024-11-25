@@ -440,8 +440,10 @@ if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
                                     </td>
                                     <td><?php echo htmlspecialchars($categorie['Nom']); ?></td>
                                     <td>
+                                         
                                           <!-- Bouton Modifier -->
-                                          <button class="btn btn-warning btn-sm">Modifier</button>
+                                    <a href="edit_categorie.php?id_Categorie=<?= htmlspecialchars($categorie['id_Categorie']); ?>" class="btn btn-warning btn-sm">Modifier</a>
+
 
                                         <!-- Bouton Supprimer -->
 

@@ -87,9 +87,10 @@ if ($nomCategorie) {
                href="ListeProduits.php?categorie=Fruits">Fruits</a>
         </li>
         <li class="nav-item">
-            <a class="btn btn-outline-primary border-2 <?php echo ($nomCategorie === 'Other') ? 'active' : ''; ?>" 
-               href="ListeProduits.php?categorie=Other">Other Products</a>
-        </li>
+    <a class="btn btn-outline-primary border-2 <?php echo (isset($nomCategorie) && $nomCategorie === 'Other Products') ? 'active' : ''; ?>" 
+       href="ListeProduits.php?categorie=<?php echo urlencode('Other Products'); ?>">Other Products</a>
+</li>
+
         <li class="nav-item">
             <a class="btn btn-outline-primary border-2 <?php echo is_null($nomCategorie) ? 'active' : ''; ?>" 
                href="ListeProduits.php">All Products</a>
