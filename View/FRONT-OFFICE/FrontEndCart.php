@@ -9,9 +9,10 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-    <title>Foody - Organic Food Website Template</title>
+  <meta charset="UTF-8" />
+ 
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Cart</title>
     <meta content="" name="keywords" />
     <meta content="" name="description" />
 
@@ -45,9 +46,7 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Manager</title>
+  
     <script>
         // Save scroll position in local storage before refreshing
         window.addEventListener('beforeunload', () => {
@@ -64,7 +63,7 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
         });
     </script>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px;">
+<body>
     <!-- Spinner Start -->
     <div
       id="spinner"

@@ -188,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
             <div class="collapse" id="order-management">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item">
-                  <a class="nav-link" href="#">View Orders</a>
+                  <a class="nav-link" href="#">Transaction Manager</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Manage Orders</a>
@@ -442,211 +442,84 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
         <!-- Filter and Search Form -->
         <div class="form-inline">
             <form method="GET" action="">
-                <input type="text" name="search" placeholder="Search by full name" value="<?= htmlspecialchars($search); ?>">
-                <select name="status_filter">
+                <input type="text" name="search" placeholder="Search by full name" value="<?= htmlspecialchars($search); ?>"  style="flex: 2; padding: 10px; border: 1px solid #ced4da; border-radius: 8px; font-size: 1em; background-color: #ffffff; transition: box-shadow 0.3s ease;">
+                <select name="status_filter" style="flex: 1; padding: 10px; border: 1px solid #ced4da; border-radius: 8px; font-size: 1em; background-color: #ffffff; transition: box-shadow 0.3s ease;">
                     <option value="all" <?= $statusFilter === 'all' ? 'selected' : ''; ?>>All</option>
                     <option value="in progress" <?= $statusFilter === 'in progress' ? 'selected' : ''; ?>>In Progress</option>
                     <option value="delivered" <?= $statusFilter === 'delivered' ? 'selected' : ''; ?>>Delivered</option>
                     <option value="canceled" <?= $statusFilter === 'canceled' ? 'selected' : ''; ?>>Canceled</option>
                 </select>
-                <button type="submit" class="btn-filter">Filter</button>
+                <button type="submit" class="btn-filter" style="flex: 0.5; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s;">Filter</button>
             </form>
         </div>
 
         <!-- Display Transactions -->
-        <?php if (empty($transaction)) : ?>
-            <p>No transaction found.</p>
-        <?php else : ?>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Transaction ID</th>
-                            <th>Full Name</th>
-                            <th>Phone Number</th>
-                            <th>Delivery Address</th>
-                            <th>Products Purchased</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($transaction as $transaction) : ?>
-                            <tr>
-                                <td><?= htmlspecialchars($transaction['transaction_id']); ?></td>
-                                <td>
-                                    <form method="POST" action="Orders.php">
-                                        <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction['transaction_id']); ?>">
-                                        <button type="submit" name="action" value="deliver" class="btn btn-success">Send Delivery</button>
-                                        <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Delivery</button>
-                                    </form>
-                                </td>
-
-                                <td><?= htmlspecialchars($transaction['full_name']); ?></td>
-                                <td><?= htmlspecialchars($transaction['phone_number']); ?></td>
-                                <td><?= htmlspecialchars($transaction['delivery_address']); ?></td>
-                                <td>
-                                    <?php
-                                    $products = json_decode($transaction['product_details'], true);
-                                    if ($products) {
-                                        echo "<ul style='margin: 0; padding-left: 15px;'>";
-                                        foreach ($products as $product) {
-                                            echo "<li>" . htmlspecialchars($product['name']) . " - " .
-                                                htmlspecialchars($product['quantity']) . " pcs @ " .
-                                                htmlspecialchars(number_format($product['price'], 2)) . " TND each</li>";
-                                        }
-                                        echo "</ul>";
-                                    } else {
-                                        echo "No products found.";
-                                    }
-                                    ?>
-                                </td>
-                                <td><?= htmlspecialchars($transaction['status']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
-    </div>  
-
-    <div class="row ">
-              <div class="col-12 grid-margin">
+        <div class="row">
+            <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">Order Status</h4>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </th>
-                            <th> Client Name </th>
-                            <th> Order No </th>
-                            <th> Product Cost </th>
-                            <th> Project </th>
-                            <th> Payment Mode </th>
-                            <th> Start Date </th>
-                            <th> Payment Status </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face1.jpg" alt="image" />
-                              <span class="pl-2">Henry Klein</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Dashboard </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-success">Approved</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face2.jpg" alt="image" />
-                              <span class="pl-2">Estella Bryan</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Website </td>
-                            <td> Cash on delivered </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-warning">Pending</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face5.jpg" alt="image" />
-                              <span class="pl-2">Lucy Abbott</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> App design </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-danger">Rejected</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face3.jpg" alt="image" />
-                              <span class="pl-2">Peter Gill</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Development </td>
-                            <td> Online Payment </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-success">Approved</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face4.jpg" alt="image" />
-                              <span class="pl-2">Sallie Reyes</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Website </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-success">Approved</div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                        <?php if (empty($transaction)) : ?>
+                        <p>No transaction found.</p>
+                        <?php else : ?>
+                            <div class="table-responsive">
+                                 <table style="color: white;"class="table table-bordered table-striped">
+                                 <thead>
+                                    <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Action</th>
+                                    <th>Full Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Delivery Address</th>
+                                    <th>Products Purchased</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($transaction as $transaction) : ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($transaction['transaction_id']); ?></td>
+                                        <td>
+                                            <form method="POST" action="Orders.php">
+                                                <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction['transaction_id']); ?>">
+                                                <button type="submit" name="action" value="deliver" class="btn btn-success">Send Delivery</button>
+                                                <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Delivery</button>
+                                            </form>
+                                        </td>
+
+                                        <td><?= htmlspecialchars($transaction['full_name']); ?></td>
+                                        <td><?= htmlspecialchars($transaction['phone_number']); ?></td>
+                                        <td><?= htmlspecialchars($transaction['delivery_address']); ?></td>
+                                        <td>
+                                            <?php
+                                            $products = json_decode($transaction['product_details'], true);
+                                            if ($products) {
+                                                echo "<ul style='margin: 0; padding-left: 15px;'>";
+                                                foreach ($products as $product) {
+                                                    echo "<li>" . htmlspecialchars($product['name']) . " - " .
+                                                        htmlspecialchars($product['quantity']) . " pcs → " .
+                                                        htmlspecialchars(number_format($product['price'])) . " TND</li>";
+                                                }
+                                                echo "</ul>";
+                                            } else {
+                                                echo "No products found.";
+                                            }
+                                            ?>
+                                        </td>
+                                        <td><div class="badge badge-outline-success"><?= htmlspecialchars($transaction['status']); ?></div></td>
+                                        <td><?= htmlspecialchars($transaction['created_at']); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                                </table>
+                            </div>
+                        <?php endif; ?>
+                    </div>  
+                 </div>
             </div>
+        </div>
+            
                     <!-- ======= Footer ======= -->
                     <footer class="footer">
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
