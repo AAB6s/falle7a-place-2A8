@@ -1,34 +1,43 @@
 <?php
-include '../Controller/categorieC.php';
-include_once '../Model/Categorie.php';
+include '../Controller/categorieC.php'; // Inclusion du contrôleur des catégories
+include_once '../Model/Categorie.php'; // Inclusion du modèle des catégories
 
-$error = ""; // Initialize the error variable
+$error = ""; // Variable pour stocker les erreurs
 
+// Initialisation du contrôleur de catégories
 $categorieC = new CategorieC();
-$list_Nom_produit = $categorieC->AfficherNom_produit();
 
-if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
-    if (!empty($_POST["Id_produit"]) && !empty($_POST["Nom"])) {
-        $Id_produit = htmlspecialchars($_POST['Id_produit']);
-        $Nom = htmlspecialchars($_POST['Nom']);
+// Traitement de la requête POST
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Vérification de la présence des champs requis
+    if (isset($_POST["Nom"])) {
+        // Validation des données
+        $Nom = htmlspecialchars(trim($_POST["Nom"])); // Nettoyage du champ Nom
 
-        $categorie = new Categorie($Id_produit, $Nom);
+        if (!empty($Nom)) {
+            // Création d'un nouvel objet Categorie
+            $categorie = new Categorie(null, $Nom); // `null` pour l'ID car il est auto-incrémenté
 
-        $categorieC->AddCategorie($categorie);
+            // Ajout de la catégorie via le contrôleur
+            $categorieC->AddCategorie($categorie);
 
-        header('Location: ListeCategorieBack.php');
-        exit();  
+            // Redirection après ajout
+            header('Location: ListeCategorieBack.php');
+            exit();  
+        } else {
+            $error = "Le champ 'Nom' est requis. Veuillez le remplir.";
+        }
     } else {
-        $error = "Missing information. Please fill all required fields.";
+        $error = "Le champ 'Nom' est manquant.";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Falle7a</title>
     <!-- plugins:css -->
@@ -43,8 +52,7 @@ if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
     <link rel="stylesheet" href="BACK_OFFICE/assets/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png" />
-    
-  </head>
+</head>
 <body>
 <div class="container-scroller">
       <!-- partial:BACK_OFFICE/partials/_sidebar.html -->
@@ -385,11 +393,11 @@ if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
             </button>
           </div>
         </nav>
-     <!-- partial -->
-     <div class="main-panel">
+          <!-- partial -->
+      <div class="main-panel">
           <div class="content-wrapper">
             <div class="page-header">
-              <h3 class="page-title"> ajouter un categorie </h3>
+              <h3 class="page-title"> ajout categorie  </h3>
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="#">Forms</a></li>
@@ -397,103 +405,98 @@ if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
                 </ol>
               </nav>
             </div>
+      
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
 
+    <h4>Ajouter une nouvelle catégorie</h4>
 
     <!-- Affichage des erreurs -->
-    <?php if (!empty($error)): ?>
-        <div style="color: red;">
-            <p><?php echo $error; ?></p>
-        </div>
-    <?php endif; ?>
+    <?php if ($error): ?>
+    <div style="color: red;"><?php echo $error; ?></div>
+<?php endif; ?>
 
-    <!-- Formulaire d'ajout de catégorie -->
-    <form action="AddCategorie.php" method="POST" enctype="multipart/form-data" class="forms-sample">
+<!-- Formulaire pour ajouter une catégorie -->
+<form method="POST" action="">
     <div class="form-group">
         <label for="Nom">Nom de la catégorie :</label>
-        <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Nom de la catégorie" required>
+        <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Nom de la catégorie">
     </div>
-    <div class="form-group">
-        <label for="Id_produit">Nom du Produit :</label>
-        <select class="form-control" id="Id_produit" name="Id_produit" required>
-            <option value="" disabled selected>Choisissez un produit</option>
-            <?php foreach ($list_Nom_produit as $product): ?>
-                <option value="<?php echo $product['Id_produit']; ?>"><?php echo $product['Nom']; ?></option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary mr-2">Ajouter la Catégorie</button>
+    <br>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+    <button type="reset" class="btn btn-dark">Cancel</button>
 </form>
 
-
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector(".forms-sample");
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
 
-        form.addEventListener("submit", function (event) {
-            let isValid = true;
+    form.addEventListener("submit", function (event) {
+        let isValid = true;
 
-            // Réinitialisation des messages d'erreur
-            form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
-            form.querySelectorAll("input, textarea").forEach((input) => {
-                input.classList.remove("error", "success");
-            });
-
-            // Validation du champ "Nom"
-            const nom = form.querySelector("input[name='Nom']");
-            if (nom.value.trim() === "") {
-                isValid = false;
-                showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
-            } else {
-                showMessage(nom, "Nom valide.", true);
-            }
-
-            // Validation du champ "ID du Produit"
-            const id = form.querySelector("textarea[name='Id']");
-            if (id.value.trim() === "") {
-                isValid = false;
-                showMessage(id, "Le champ ID du Produit ne peut pas être vide.", false);
-            } else {
-                showMessage(id, "ID du Produit valide.", true);
-            }
-
-            // Empêche l'envoi du formulaire si des erreurs sont détectées
-            if (!isValid) {
-                event.preventDefault();
-            }
+        // Clear previous error messages and styling
+        form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
+        form.querySelectorAll("input, textarea").forEach((input) => {
+            input.classList.remove("error", "success");
         });
 
-        // Fonction pour afficher les messages
-        function showMessage(input, message, isSuccess) {
-            const messageElement = document.createElement("span");
-            messageElement.textContent = message;
-            messageElement.classList.add("error-message");
-            messageElement.style.color = isSuccess ? "green" : "red";
-            input.classList.add(isSuccess ? "success" : "error");
-            input.insertAdjacentElement("afterend", messageElement);
+        // Validate the "Nom" field
+        const nom = form.querySelector("input[name='Nom']");
+        if (nom.value.trim() === "") {
+            isValid = false;
+            showMessage(nom, "Le champ Nom ne peut pas être vide.", false);  // Message rouge si invalide
+        } else {
+            showMessage(nom, "Nom valide.", true);  // Message vert si valide
+        }
+
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            event.preventDefault();
         }
     });
-</script>
 
+    function showMessage(input, message, isSuccess) {
+        // Create the message element
+        const messageElement = document.createElement("span");
+        messageElement.textContent = message;
+        messageElement.classList.add("error-message");
+        messageElement.style.color = isSuccess ? "green" : "red";  // Green if valid, red if invalid
+
+        // Add success or error class to the input field
+        input.classList.add(isSuccess ? "success" : "error");
+
+        // Insert the message directly under the input field (parent element)
+        // Ensure the message goes under the specific input field
+        input.closest('.form-group').appendChild(messageElement); 
+    }
+});
+
+</script>
 <style>
     .error {
-        border-color: red;
-    }
+    border-color: red;
+}
 
-    .success {
-        border-color: green;
-    }
+.success {
+    border-color: green;
+}
 
-    .error-message {
-        font-size: 0.9rem;
-        margin-left: 5px;
-    }
+.error-message {
+    font-size: 0.9rem;
+    margin-top: 5px;  /* Adds space between the input field and the message */
+    display: block;  /* Ensures the message is displayed in a block below the input */
+}
+
 </style>
 
- <!-- Include Bootstrap JS for functionality -->
- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+
+
+
+
+     <!-- Include Bootstrap JS for functionality -->
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

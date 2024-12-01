@@ -1,33 +1,14 @@
 <?php
-include '../Controller/categorieC.php';
-include_once '../Model/Categorie.php';
+include '../Controller/categorieC.php'; // Inclure le contrôleur des catégories
 
-$error = "";
-$rep = null;
+$categorieC = new CategorieC(); // Créer une instance du contrôleur de catégories
 
-// Instanciation du contrôleur
-$categorieC = new CategorieC();
-$list_Id_produit = $categorieC->AfficherNom_produit(); // Liste des produits (Id_produit et Nom)
-$list_categories = $categorieC->AfficherCategorie(); // Récupération des catégories
-
-// Traitement du formulaire
-if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
-    if (!empty($_POST["Id_produit"]) && !empty($_POST["Nom"])) {
-        $rep = new Categorie(
-            $_POST['Id_produit'],
-            $_POST['Nom']
-        );
-        $categorieC->AddCategorie($rep);
-        header('Location: AddCategorie.php'); // Redirection après ajout
-        exit();
-    } else {
-        $error = "Missing information";
-    }
-}
+// Récupérer toutes les catégories de la base de données
+$categories = $categorieC->AfficherCategories();
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
    <!-- Required meta tags -->
    <meta charset="utf-8">
@@ -46,6 +27,7 @@ if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
     <!-- End layout styles -->
     <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png" />
     
+   
 </head>
 <body>
 <div class="container-scroller">
@@ -387,86 +369,95 @@ if (isset($_POST["Id_produit"]) && isset($_POST["Nom"])) {
             </button>
           </div>
         </nav>
+        <!-- partial -->
 
-    <!-- Affichage des erreurs -->
-    <?php if (!empty($error)): ?>
-        <div class="error">
-            <p><?php echo $error; ?></p>
-        </div>
-    <?php endif; ?>
 
-    <div class="main-panel">
+     <!-- partial -->
+
+
+     <div class="main-panel">
     <div class="content-wrapper">
         <div class="page-header">
-            <h3 class="page-title">     </h3>
+            <h3 class="page-title">list categorie</h3>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">categorie</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">List</li>
+                    <li class="breadcrumb-item"><a href="#">categories</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Lists</li>
                 </ol>
             </nav>
         </div>
-    <!-- Affichage des catégories existantes -->
-    <!-- Categories Table -->
-    <div class="row">
-    <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">Liste des Catégories</h2>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th style="font-weight: bold; color: #7B9E7F; font-size: 17px;">Produit</th>
-                                <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Nom de la Catégorie</th>
-                                <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($list_categories as $categorie): ?>
-                                <tr>
-                                    <td>
-                                        <?php 
-                                        // Recherche du nom du produit correspondant à l'ID
-                                        $produit_nom = "Inconnu"; // Valeur par défaut si le produit n'est pas trouvé
-                                        foreach ($list_Id_produit as $produit) {
-                                            if ($produit['Id_produit'] == $categorie['Id_produit']) {
-                                                $produit_nom = htmlspecialchars($produit['Nom']);
-                                                break;
-                                            }
-                                        }
-                                        echo $produit_nom;
-                                        ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($categorie['Nom']); ?></td>
-                                    <td>
-                                         
-                                          <!-- Bouton Modifier -->
-                                    <a href="edit_categorie.php?id_Categorie=<?= htmlspecialchars($categorie['id_Categorie']); ?>" class="btn btn-warning btn-sm">Modifier</a>
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Liste des categories</h4>
+
+    
+
+    
+
+      <div class="table-responsive">
+        <table class="table">
+        <thead>
+            <tr>
+            <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Nom de la Catégorie</th>
+            <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Actions</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+// Afficher chaque catégorie
+
+// Afficher chaque catégorie
+foreach ($categories as $categorie) {
+    echo "<tr>";
+
+    echo "<td>" . $categorie['Nom'] . "</td>";
+    echo "<td>";
+    // Lien pour modifier la catégorie (envoi de l'ID en paramètre)
+    echo "<a href='edit_categorie.php?id_Categorie=" . $categorie['id_Categorie'] . "' class='btn btn-warning btn-sm mr-2'>Modifier</a>";
+
+    // Lien pour supprimer la catégorie avec un espacement
+    echo "<a href='delete_categorie.php?id_Categorie=" . $categorie['id_Categorie'] . "' 
+              onclick=\"return confirm('Are you sure you want to delete this category?');\" 
+              class='btn btn-danger btn-sm'>Supprimer</a>";
+
+    echo "</td>";
+    echo "</tr>";
+}
+?>
 
 
-                                        <!-- Bouton Supprimer -->
 
-                                             <a href="delete_categorie.php?id_Categorie=<?= htmlspecialchars($categorie['id_Categorie']); ?>" 
-                                           onclick="return confirm('Are you sure you want to delete this categorie?');" 
-                                           class="btn btn-danger btn-sm">Supprimer</a>
+        </tbody>
+    </table>
+<!-- content-wrapper ends -->
+          <!-- partial:BACK_OFFICE/partials/_footer.html -->
+          
+             
 
-                                    </td>
-
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+          
+          <!-- partial -->
         </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
     </div>
-</div>
-
-    
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-   
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="BACK_OFFICE/assets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="BACK_OFFICE/assets/js/off-canvas.js"></script>
+    <script src="BACK_OFFICE/assets/js/hoverable-collapse.js"></script>
+    <script src="BACK_OFFICE/assets/js/misc.js"></script>
+    <script src="BACK_OFFICE/assets/js/settings.js"></script>
+    <script src="BACK_OFFICE/assets/js/todolist.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <!-- End custom js for this page -->
 </body>
 </html>

@@ -1,34 +1,35 @@
 <?php
-include '../Controller/CategorieC.php';
-include_once '../Model/Categorie.php';
+include '../Controller/CategorieC.php'; // Inclure le contrôleur des catégories
+include_once '../Model/Categorie.php'; // Inclure le modèle de catégorie
 
 $error = ""; // Initialiser la variable d'erreur
-$categorieC = new CategorieC(); // Assurez-vous que l'objet est créé
+$categorieC = new CategorieC(); // Créer une instance du contrôleur des catégories
 $categorie = null;
 
-if (isset($_GET['id_Categorie'])) { // Vérifiez si un ID de catégorie est passé dans l'URL
+// Vérifiez si un ID de catégorie est passé dans l'URL
+if (isset($_GET['id_Categorie'])) {
     $id_Categorie = htmlspecialchars($_GET['id_Categorie']);
-    $categorie = $categorieC->getCategorieById($id_Categorie); // Récupérez les données existantes
-    $list_Nom_produit = $categorieC->AfficherNom_produit();
+    // Récupérez les données existantes de la catégorie par son ID
+    $categorie = $categorieC->RecupererCategorie($id_Categorie); 
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Id_produit"], $_POST["Nom"], $_POST["id_Categorie"])) {
-    if (!empty($_POST["Id_produit"]) && !empty($_POST["Nom"])) {
-        $Id_produit = htmlspecialchars($_POST['Id_produit']);
-        $Nom = htmlspecialchars($_POST['Nom']);
-        $id_Categorie = htmlspecialchars($_POST['id_Categorie']); // Récupérer l'ID de la catégorie
+// Vérifie si le formulaire a été soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Nom"], $_POST["id_Categorie"])) {
+    if (!empty($_POST["Nom"])) {
+        $Nom = htmlspecialchars($_POST['Nom']); // Récupère le nouveau nom
+        $id_Categorie = htmlspecialchars($_POST['id_Categorie']); // Récupère l'ID de la catégorie
 
-        // Créer une nouvelle instance de la catégorie
-        $categorie = new Categorie($Id_produit, $Nom);
+        // Créer une nouvelle instance de la catégorie avec l'ID et le nouveau nom
+        $categorie = new Categorie($id_Categorie, $Nom);
 
-        // Appeler la fonction de mise à jour
-        $categorieC->updateCategorie($categorie, $id_Categorie);
+        // Appeler la fonction de mise à jour dans le contrôleur pour mettre à jour la catégorie dans la base de données
+        $categorieC->ModifierCategorie($categorie);
 
-        // Rediriger après mise à jour
+        // Redirige après mise à jour
         header('Location: ListeCategorieBack.php');
         exit();
     } else {
-        $error = "Des informations sont manquantes. Veuillez remplir tous les champs requis.";
+        $error = "Le champ 'Nom' est requis."; // Affiche une erreur si le champ 'Nom' est vide
     }
 }
 ?>
@@ -36,28 +37,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Id_produit"], $_POST[
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Falle7a</title>
-    <!-- plugins:css -->
+<meta charset="utf-8">
+    <meta name="viewport" content="wId_Produitth=device-wId_Produitth, initial-scale=1, shrink-to-fit=no">
+    <title>Modifier Produit - Falle7a</title>
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
     <link rel="stylesheet" href="BACK_OFFICE/assets/css/style.css">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png" />
-    
-  </head>
+    <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png">
+</head>
 <body>
 <div class="container-scroller">
-      <!-- partial:BACK_OFFICE/partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
           <a class="sidebar-brand brand-logo" href="BACK_OFFICE/index.html"><img src="BACK_OFFICE/assets/images/logo.svg" alt="logo" /></a>
           <a class="sidebar-brand brand-logo-mini" href="BACK_OFFICE/index.html"><img src="BACK_OFFICE/assets/images/logo-mini.svg" alt="logo" /></a>
@@ -394,155 +384,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Id_produit"], $_POST[
             </button>
           </div>
         </nav>
-     <!-- partial -->
-     </nav>
-<!-- partial -->
-<div class="main-panel">
-    <div class="content-wrapper">
-        <div class="page-header">
-            <h3 class="page-title">Modifier une catégorie</h3>
-            <nav aria-label="breadcrumb">
+        <!-- partial -->
+      <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> Modifier une Catégorie </h3>
+              <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Form</li>
+                  <li class="breadcrumb-item"><a href="#">categories</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Form </li>
                 </ol>
-            </nav>
-        </div>
-        <div class="col-md-6 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
+              </nav>
+            </div>
+    <!-- Formulaire de modification -->
+    <div class="col-md-6 grId_Produit-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Modifier categorie</h4>
+                <div Id_Produit="error" style="color:red;">
+                    <?php echo $error; ?>
+                </div>
 
-<!-- Affichage des erreurs -->
-<?php if (!empty($error)): ?>
-    <div style="color: red;">
-        <p><?php echo $error; ?></p>
-    </div>
-<?php endif; ?>
-<!-- Formulaire de modification de catégorie -->
-<form action="edit_categorie.php" method="POST" enctype="multipart/form-data" class="forms-sample">
-    <input type="hidden" name="id_Categorie" value="<?php echo htmlspecialchars($categorie['id_Categorie'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-    
+    <?php if (!empty($error)): ?>
+        <p style="color: red;"><?php echo $error; ?></p> <!-- Affiche l'erreur si elle existe -->
+    <?php endif; ?>
+
+    <!-- Formulaire pour modifier une catégorie -->
+    <form method="POST">
     <div class="form-group">
         <label for="Nom">Nom de la catégorie :</label>
-        <input 
-            type="text" 
-            class="form-control" 
-            id="Nom" 
-            name="Nom" 
-            value="<?php echo htmlspecialchars($categorie['Nom'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" 
-            placeholder="Nom de la catégorie"
-        >
+        <input type="text" class="form-control" id="Nom" name="Nom" value="<?php echo $categorie ? $categorie->getNom() : ''; ?>" required>
     </div>
 
-    <div class="form-group">
-        <label for="Id_produit">Nom du Produit :</label>
-        <select class="form-control" id="Id_produit" name="Id_produit">
-            <?php foreach ($list_Nom_produit as $product): ?>
-                <option 
-                    value="<?php echo htmlspecialchars($product['Id_produit'], ENT_QUOTES, 'UTF-8'); ?>" 
-                    <?php echo ($product['Id_produit'] == $categorie['Id_produit']) ? 'selected' : ''; ?>
-                >
-                    <?php echo htmlspecialchars($product['Nom'], ENT_QUOTES, 'UTF-8'); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <input type="hidden" name="id_Categorie" value="<?php echo $categorie ? $categorie->getIdCategorie() : ''; ?>">
 
-    <button type="submit" class="btn btn-primary mr-2">Modifier la Catégorie</button>
+    <button type="submit" class="btn btn-primary">Mettre à jour</button> 
+    <a href="ListeCategorieBack.php" class="btn btn-secondary btn-sm">
+    <i class="fas fa-arrow-left"></i> Retour à la liste
+</a>
 </form>
 
 
-
-<!-- JavaScript pour gérer la liste des produits -->
-<script>
-    const produits = <?php echo json_encode($list_Nom_produit); ?>;
-
-    function remplirListeProduits() {
-        const select = document.getProduitById('Id_produit');
-
-        // Éviter de dupliquer les options
-        if (select.options.length > 1) return;
-
-        produits.forEach(product => {
-            const option = document.createElement('option');
-            option.value = product.Id_produit;
-            option.textContent = product.Nom;
-            select.appendChild(option);
-        });
-    }
-</script>
-
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector(".forms-sample");
-
-        form.addEventListener("submit", function (event) {
-            let isValid = true;
-
-            // Réinitialisation des messages d'erreur
-            form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
-            form.querySelectorAll("input, textarea").forEach((input) => {
-                input.classList.remove("error", "success");
-            });
-
-            // Validation du champ "Nom"
-            const nom = form.querySelector("input[name='Nom']");
-            if (nom.value.trim() === "") {
-                isValid = false;
-                showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
-            } else {
-                showMessage(nom, "Nom valide.", true);
-            }
-
-            // Validation du champ "ID du Produit"
-            const id = form.querySelector("select[name='Id_produit']");
-            if (id.value.trim() === "") {
-                isValid = false;
-                showMessage(id, "Le champ ID du Produit ne peut pas être vide.", false);
-            } else {
-                showMessage(id, "ID du Produit valide.", true);
-            }
-
-            // Empêche l'envoi du formulaire si des erreurs sont détectées
-            if (!isValid) {
-                event.preventDefault();
-            }
-        });
-
-        // Fonction pour afficher les messages
-        function showMessage(input, message, isSuccess) {
-            const messageElement = document.createElement("span");
-            messageElement.textContent = message;
-            messageElement.classList.add("error-message");
-            messageElement.style.color = isSuccess ? "green" : "red";
-            input.classList.add(isSuccess ? "success" : "error");
-            input.insertAdjacentElement("afterend", messageElement);
-        }
-    });
-</script>
-
-<style>
-    .error {
-        border-color: red;
-    }
-
-    .success {
-        border-color: green;
-    }
-
-    .error-message {
-        font-size: 0.9rem;
-        margin-left: 5px;
-    }
-</style>
-
- 
-
- <!-- Include Bootstrap JS for functionality -->
- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

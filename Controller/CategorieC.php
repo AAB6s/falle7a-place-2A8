@@ -1,77 +1,70 @@
 <?php 
-include '../config.php';
-include '../Model/Categorie.php';
-include '../Model/Produit.php';
+include_once '../config.php'; // Inclusion du fichier de configuration pour la base de données
+include_once '../Model/Categorie.php';
+
 
 class CategorieC {
 
     
-    public function AddCategorie($Categorie)
-    {
-        $sql = "INSERT INTO categorie (Id_produit, Nom)
-                VALUES (:Id_produit, :Nom)";
+    public function AddCategorie($categorie) {
+        $sql = "INSERT INTO categorie (Nom) VALUES (:Nom)";
         $db = config::getConnexion();
-        try {
-            $req = $db->prepare($sql);
-            $Id_produit = $Categorie->getId_produit();
-            $Nom = $Categorie->getNom();
-            
-            $req->bindValue(':Id_produit', $Id_produit);
-            $req->bindValue(':Nom', $Nom);
 
-            $req->execute();
+        try {
+            $query = $db->prepare($sql);
+            $query->execute([
+                'Nom' => $categorie->getNom()
+            ]);
         } catch (Exception $e) {
-            echo 'Error: ' . $e->getMessage();
+            die('Erreur: ' . $e->getMessage());
         }
     }
-    
-    
-    public function AfficherCategorie()
-    {
+
+    // Méthode pour afficher toutes les catégories
+    public function AfficherCategories() {
         $sql = "SELECT * FROM categorie";
         $db = config::getConnexion();
+
         try {
-            $liste = $db->query($sql);
-            return $liste;
+            $query = $db->query($sql);
+            return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            die('Error: ' . $e->getMessage());
+            die('Erreur: ' . $e->getMessage());
         }
     }
-
     
-    public function deleteCategorie($id_Categorie)
-    {
-        $sql = "DELETE FROM categorie WHERE id_Categorie = :id_Categorie";
+    public function RecupererCategorie($id_Categorie) {
+        $sql = "SELECT * FROM categorie WHERE id_Categorie = :id_Categorie";
         $db = config::getConnexion();
-        $req = $db->prepare($sql);
-        $req->bindValue(':id_Categorie', $id_Categorie);
-
+    
         try {
-            $req->execute();
+            $query = $db->prepare($sql);
+            $query->execute(['id_Categorie' => $id_Categorie]);
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+    
+            // Si une catégorie est trouvée, créer une instance de l'objet Categorie
+            if ($result) {
+                return new Categorie($result['id_Categorie'], $result['Nom']);
+            }
+            return null; // Si aucune catégorie n'est trouvée
         } catch (Exception $e) {
-            die('Error: ' . $e->getMessage());                           
+            die('Erreur: ' . $e->getMessage());
         }
     }
-
     
-    function updateCategorie($Categorie, $id_Categorie)
-    {
+    
+    public function ModifierCategorie($categorie) {
+        $sql = "UPDATE categorie SET Nom = :Nom WHERE id_Categorie = :id_Categorie";
+        $db = config::getConnexion();
+    
         try {
-            $db = config::getConnexion();
-            $query = $db->prepare(
-                'UPDATE categorie SET  
-                    Id_produit = :Id_produit,
-                    Nom = :Nom
-                WHERE id_Categorie = :id_Categorie'
-            );
+            $query = $db->prepare($sql);
             $query->execute([
-                'id_Categorie' => $id_Categorie,
-                'Nom' => $Categorie->getNom(),  // Assurez-vous d'utiliser getNom() et non getCategorie()
-                'Id_produit' => $Categorie->getId_produit()
+                'Nom' => $categorie->getNom(),
+                'id_Categorie' => $categorie->getIdCategorie()
             ]);
-            echo $query->rowCount() . " record(s) UPDATED successfully <br>";
-        } catch (PDOException $e) {
-            echo 'Error: ' . $e->getMessage();
+        } catch (Exception $e) {
+            die('Erreur: ' . $e->getMessage());
         }
     }
     
@@ -91,6 +84,18 @@ class CategorieC {
             die('Error: ' . $e->getMessage());
         }
     }
+    public function deleteCategorie($id_Categorie) {
+        $sql = "DELETE FROM categorie WHERE id_Categorie = :id_Categorie";
+        $db = config::getConnexion();
+    
+        try {
+            $query = $db->prepare($sql);
+            $query->execute(['id_Categorie' => $id_Categorie]);
+        } catch (Exception $e) {
+            die('Erreur: ' . $e->getMessage());
+        }
+    }
+    
 
     
     public function AfficherNom_produit() {
@@ -123,10 +128,40 @@ class CategorieC {
             die('Erreur: ' . $e->getMessage());
         }
     }
+    public function getAllCategories()
+    {
+        $sql = "SELECT * FROM categorie";
+        $db = config::getConnexion();
 
-    // Les autres méthodes de votre classe...
-}
+        try {
+            $query = $db->query($sql);
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Erreur: ' . $e->getMessage());
+        }
     
+    }  
+}    
+/*public function getCategories() {
+    $sql = "SELECT Nom FROM categorie"; // Adjust if necessary
+    $db = config::getConnexion();
 
+    try {
+        $query = $db->prepare($sql);
+        $query->execute();
+        $categories = $query->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Check if the query returned any results
+        if (!$categories) {
+            return []; // Return an empty array if no categories are found
+        }
+        
+        return $categories;
+    } catch (Exception $e) {
+        die('Erreur: ' . $e->getMessage());
+    }
+}
+  
+*/
 
 ?>

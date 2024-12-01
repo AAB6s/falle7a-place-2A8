@@ -1,17 +1,18 @@
-
 <?php
 include '../Controller/ProduitC.php';  
+
+// Initialisation du contrôleur Produit
 $produitC = new ProduitC();
+
+// Récupérer la liste des produits avec jointure sur les catégories
 $list = $produitC->AfficherProduit();
-
-
-
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
+<html lang="fr">
+<head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Falle7a</title>
     <!-- plugins:css -->
@@ -26,9 +27,9 @@ $list = $produitC->AfficherProduit();
     <link rel="stylesheet" href="BACK_OFFICE/assets/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png" />
-  </head>
-  <body>
-    <div class="container-scroller">
+</head>
+<body>
+<div class="container-scroller">
       <!-- partial:BACK_OFFICE/partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
@@ -368,98 +369,65 @@ $list = $produitC->AfficherProduit();
           </div>
         </nav>
         <!-- partial -->
-
-
-        <div class="main-panel">
-    <div class="content-wrapper">
-        <div class="page-header">
-            <h3 class="page-title">Produit List</h3>
-            <nav aria-label="breadcrumb">
+      <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> liste   </h3>
+              <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Produits</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">List</li>
+                  <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Form </li>
                 </ol>
-            </nav>
-        </div>
-        <div class="row">
-            <div class="col-lg-12 grid-margin stretch-card">
+              </nav>
+            </div>
+      
+            
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Liste des produits</h4>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Image</th>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Prix</th>
-                                        <th>Quantité</th>
-                                        <th>Actions</th> 
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <?php foreach ($list as $produit): ?>
-                                    <tr>
-                                        <td>
+    <div class="container mt-5">
+        <h4 class="card-title">Liste des produits</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Image</th>
+                        <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Nom</th>
+                        <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Description</th>
+                        <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Prix</th>
+                        <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Quantité</th>
+                       <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Catégorie</th>
+                       <th style="font-weight: bold; color: #7B9E7F; font-size: 18px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($list as $produit): ?>
+                        <tr>
+                        <td>
                                             <img src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
                                                  alt="<?php echo htmlspecialchars($produit['Nom']); ?>" 
                                                  style="width: 70px; height: 70px; object-fit: cover;">
                                         </td>
-                                        <td><?= htmlspecialchars($produit['Nom']); ?></td>
-                                        <td><?= htmlspecialchars($produit['Description']); ?></td>
-                                        <td><?= htmlspecialchars($produit['Prix']); ?> TND</td>
-                                        <td><?= htmlspecialchars($produit['Quantite']); ?></td>
-                                        <td>
-                                            <!-- Bouton Modifier -->
-                                            <a href="edit_produit.php?Id_Produit=<?= $produit['Id_Produit']; ?>" class="btn btn-warning btn-sm">Modifier</a>
-                                            
-                                            <!-- Bouton Supprimer -->
-                                            <a href="delete_product.php?Id_Produit=<?= htmlspecialchars($produit['Id_Produit']); ?>" 
-                                           onclick="return confirm('Are you sure you want to delete this product?');" 
-                                           class="btn btn-danger btn-sm">Supprimer</a>
-
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            <td><?= htmlspecialchars($produit['Nom']); ?></td>
+                            <td><?= htmlspecialchars($produit['Description']); ?></td>
+                            <td><?= htmlspecialchars($produit['Prix']); ?> TND</td>
+                            <td><?= htmlspecialchars($produit['Quantite']); ?></td>
+                            <td><?= htmlspecialchars($produit['Nom_Categorie']); ?></td> 
+                            <td>
+                                <!-- Bouton Modifier -->
+                                <a href="edit_produit.php?Id_Produit=<?= $produit['id_Produit']; ?>" class="btn btn-warning btn-sm">Modifier</a>
+                                
+                                <!-- Bouton Supprimer -->
+                                <a href="delete_product.php?Id_Produit=<?= htmlspecialchars($produit['id_Produit']); ?>" 
+                                   onclick="return confirm('Are you sure you want to delete this product?');" 
+                                   class="btn btn-danger btn-sm">Supprimer</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
-
-  <!-- content-wrapper ends -->
-          <!-- partial:BACK_OFFICE/partials/_footer.html -->
-          <footer class="footer">
-            <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
-          <!-- partial -->
-        </div>
-        <!-- main-panel ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
-    </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="BACK_OFFICE/assets/vendors/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
-    <script src="BACK_OFFICE/assets/js/off-canvas.js"></script>
-    <script src="BACK_OFFICE/assets/js/hoverable-collapse.js"></script>
-    <script src="BACK_OFFICE/assets/js/misc.js"></script>
-    <script src="BACK_OFFICE/assets/js/settings.js"></script>
-    <script src="BACK_OFFICE/assets/js/todolist.js"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page -->
-    <!-- End custom js for this page -->
-  </body>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

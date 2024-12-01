@@ -1,89 +1,108 @@
 <?php
 class Produit
 {
-    public int $Id_Produit;
-    public string $Image;
-    public string $Nom;
-    public string $Description;
-    public float $Prix;
-    public int $Quantite;
+    public int $id_Produit;
+    public string $image;
+    public string $nom;
+    public string $description;
+    public float $prix;
+    public int $quantite;
+    public int $id_Categorie;
 
     // Constructeur pour initialiser les propriétés
-    public function __construct(int $Id_Produit, string $Image, string $Nom, string $Description, float $Prix, int $Quantite)
-    {
-        $this->Id_Produit = $Id_Produit;
-        $this->Image = $Image;
-        $this->Nom = $Nom;
-        $this->Description = $Description;
-        $this->Prix = $Prix;
-        $this->Quantite = $Quantite;
+    public function __construct(
+        int $id_Produit,
+        string $image,
+        string $nom,
+        string $description,
+        float $prix,
+        int $quantite,
+        int $id_Categorie
+    ) {
+        $this->id_Produit = $id_Produit;
+        $this->image = $image;
+        $this->nom = $nom;
+        $this->description = $description;
+        $this->prix = $prix;
+        $this->quantite = $quantite;
+        $this->id_Categorie = $id_Categorie;
     }
 
-    // Getter et Setter pour chaque propriété
-
+    // Getters et Setters
     public function getIdProduit(): int
     {
-        return $this->Id_Produit;
+        return $this->id_Produit;
     }
 
-    public function setIdProduit(int $Id_Produit): self
+    public function setIdProduit(int $id_Produit): self
     {
-        $this->Id_Produit = $Id_Produit;
+        $this->id_Produit = $id_Produit;
         return $this;
     }
 
     public function getImage(): string
     {
-        return $this->Image;
+        return $this->image;
     }
 
-    public function setImage(string $Image): self
+    public function setImage(string $image): self
     {
-        $this->Image = $Image;
+        $this->image = $image;
         return $this;
     }
 
     public function getNom(): string
     {
-        return $this->Nom;
+        return $this->nom;
     }
 
-    public function setNom(string $Nom): self
+    public function setNom(string $nom): self
     {
-        $this->Nom = $Nom;
+        $this->nom = $nom;
         return $this;
     }
 
     public function getDescription(): string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(string $Description): self
+    public function setDescription(string $description): self
     {
-        $this->Description = $Description;
+        $this->description = $description;
         return $this;
     }
 
     public function getPrix(): float
     {
-        return $this->Prix;
+        return $this->prix;
     }
 
-    public function setPrix(float $Prix): self
+    public function setPrix(float $prix): self
     {
-        $this->Prix = $Prix;
+        $this->prix = $prix;
         return $this;
     }
 
     public function getQuantite(): int
     {
-        return $this->Quantite;
+        return $this->quantite;
     }
 
-    public function setQuantite(int $Quantite): self
+    public function setQuantite(int $quantite): self
     {
-        $this->Quantite = $Quantite;
+        $this->quantite = $quantite;
+        return $this;
+    }
+
+    public function getIdCategorie(): int
+    {
+        return $this->id_Categorie;
+    }
+
+    public function setIdCategorie(int $id_Categorie): self
+    {
+        $this->id_Categorie = $id_Categorie;
         return $this;
     }
 }

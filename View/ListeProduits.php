@@ -1,18 +1,21 @@
 <?php
 include '../Controller/ProduitC.php';
 $produitC = new ProduitC();
-$list = $produitC->AfficherProduit();
 
-// Récupérer le nom de la catégorie depuis la requête GET
+// Get the categories from the database
+$categories = $produitC->getCategories();
+
+// Get the selected category from the URL query parameter
 $nomCategorie = isset($_GET['categorie']) ? $_GET['categorie'] : null;
 
-// Récupérer la liste des produits selon la catégorie
+// Fetch the products based on the selected category, or all products if no category is selected
 if ($nomCategorie) {
-    $list = $produitC->AfficherProduitParNomCategorie($nomCategorie);
+    $list = $produitC->AfficherProduitParNomCategorie($nomCategorie);  // Fetch products by category
 } else {
-    $list = $produitC->AfficherProduit();
+    $list = $produitC->AfficherProduit();  // Fetch all products
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -77,25 +80,26 @@ if ($nomCategorie) {
                 </div>
             </div>
             <div class="col-lg-6 text-start text-lg-end wow slideInRight" data-wow-delay="0.1s">
-    <ul class="nav nav-pills d-inline-flex justify-content-end gap-2 mb-5">
-        <li class="nav-item">
-            <a class="btn btn-outline-primary border-2 <?php echo ($nomCategorie === 'Vegetables') ? 'active' : ''; ?>" 
-               href="ListeProduits.php?categorie=Vegetables">Vegetables</a>
-        </li>
-        <li class="nav-item">
-            <a class="btn btn-outline-primary border-2 <?php echo ($nomCategorie === 'Fruits') ? 'active' : ''; ?>" 
-               href="ListeProduits.php?categorie=Fruits">Fruits</a>
-        </li>
-        <li class="nav-item">
-    <a class="btn btn-outline-primary border-2 <?php echo (isset($nomCategorie) && $nomCategorie === 'Other Products') ? 'active' : ''; ?>" 
-       href="ListeProduits.php?categorie=<?php echo urlencode('Other Products'); ?>">Other Products</a>
-</li>
+            <ul class="nav nav-pills d-inline-flex justify-content-end gap-2 mb-5">
+    <?php 
+    // Ensure $categories is defined and not empty before looping
+    if (!empty($categories) && is_array($categories)) {
+        foreach ($categories as $category) {
+            $categoryName = htmlspecialchars($category['Nom']); // Escape category name for safety
+            $isActive = ($nomCategorie === $category['Nom']) ? 'active' : ''; // Determine if the current category is active
+            echo '<li class="nav-item">
+                    <a class="btn btn-outline-primary border-2 ' . $isActive . '" 
+                    href="ListeProduits.php?categorie=' . urlencode($category['Nom']) . '">' . $categoryName . '</a>
+                  </li>';
+        }
+    }
+    ?>
+    <li class="nav-item">
+        <a class="btn btn-outline-primary border-2 <?php echo is_null($nomCategorie) ? 'active' : ''; ?>" 
+           href="ListeProduits.php">All Products</a>
+    </li>
+</ul>
 
-        <li class="nav-item">
-            <a class="btn btn-outline-primary border-2 <?php echo is_null($nomCategorie) ? 'active' : ''; ?>" 
-               href="ListeProduits.php">All Products</a>
-        </li>
-    </ul>
 </div>
 
         </div>
@@ -108,41 +112,53 @@ if ($nomCategorie) {
                 }
             </style>
 
-            <?php foreach ($list as $produit) { ?>
-                <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="product-item">
-                        <div class="position-relative bg-light overflow-hidden">
-                            <!-- Convert BLOB to Base64 -->
-                            <img class="img-fluid"
-                                 src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
-                                 alt="<?php echo htmlspecialchars($produit['Nom']); ?>">
-                            <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
-                        </div>
-                        <div class="text-center p-4">
-                            <!-- Display product name -->
-                            <a class="d-block h5 mb-2" href="#"><?php echo htmlspecialchars($produit['Nom']); ?></a>
-                            
-                            <!-- Display product description -->
-                            <p class="text-muted mb-2"><?php echo htmlspecialchars($produit['Description']); ?></p>
-                            
-                            <!-- Display product price -->
-                            <span class="text-primary me-1"><?php echo htmlspecialchars($produit['Prix']); ?> dt</span>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="w-50 text-center border-end py-2">
-                                <a class="text-body" href="ViewProduct.php?id=<?php echo htmlspecialchars($produit['Id_Produit']); ?>">
-                                    <i class="fa fa-eye text-primary me-2"></i>View detail
-                                </a>
-                            </small>
-                            <small class="w-50 text-center py-2">
-                                <a class="text-body" href="AddToCart.php?id=<?php echo htmlspecialchars($produit['Id_Produit']); ?>">
-                                    <i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart
-                                </a>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
+<?php foreach ($list as $produit) { ?>
+    <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+        <div class="product-item">
+            <div class="position-relative bg-light overflow-hidden">
+                <!-- Vérification de la présence de l'image -->
+                <?php if (!empty($produit['Image'])): ?>
+                    <img class="img-fluid"
+                         src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
+                         alt="<?php echo htmlspecialchars($produit['Nom']); ?>">
+                <?php else: ?>
+                    <!-- Image par défaut si aucune image n'est fournie -->
+                    <img class="img-fluid"
+                         src="path/to/default/image.jpg" 
+                         alt="Image not available">
+                <?php endif; ?>
+                
+                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
+            </div>
+            <div class="text-center p-4">
+                <!-- Display product name -->
+                <a class="d-block h5 mb-2" href="ViewProduct.php?id=<?php echo htmlspecialchars($produit['id_Produit']); ?>">
+                    <?php echo htmlspecialchars($produit['Nom']); ?>
+                </a>
+                
+                <!-- Display product description -->
+                <p class="text-muted mb-2"><?php echo htmlspecialchars($produit['Description']); ?></p>
+                
+                <!-- Display product price -->
+                <span class="text-primary me-1"><?php echo htmlspecialchars($produit['Prix']); ?> dt</span>
+            </div>
+            <div class="d-flex border-top">
+                <small class="w-50 text-center border-end py-2">
+                    <a class="text-body" href="ViewProduct.php?id=<?php echo htmlspecialchars($produit['id_Produit']); ?>">
+                        <i class="fa fa-eye text-primary me-2"></i>View detail
+                    </a>
+                </small>
+                <small class="w-50 text-center py-2">
+                    <a class="text-body" href="AddToCart.php?id=<?php echo htmlspecialchars($produit['id_Produit']); ?>">
+                        <i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart
+                    </a>
+                </small>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+
+
         </div>
     </div>
 </div>

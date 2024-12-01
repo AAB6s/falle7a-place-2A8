@@ -1,55 +1,71 @@
-<?php 
+<?php
 include '../Controller/produitC.php';
+include '../Controller/categorieC.php';
 include_once '../Model/produit.php';
 
 $error = "";
 
-
+// Instances des contrôleurs
 $produitC = new ProduitC();
+$categorieC = new CategorieC();
+
+// Récupérer toutes les catégories pour les afficher dans le formulaire
+$categories = $categorieC->getAllCategories();
+
+$error = "";
 
 if (
     isset($_POST["Nom"]) &&
     isset($_POST["Description"]) &&
     isset($_POST["Prix"]) &&
     isset($_POST["Quantite"]) &&
-    isset($_FILES["Image"]) 
+    isset($_FILES["Image"]) &&
+    isset($_POST["id_Categorie"]) // Vérifier si une catégorie a été sélectionnée
 ) {
+    // Vérifier que tous les champs sont remplis
     if (
         !empty($_POST["Nom"]) &&
         !empty($_POST["Description"]) &&
         !empty($_POST["Prix"]) &&
         !empty($_POST["Quantite"]) &&
-        !empty($_FILES["Image"]["tmp_name"]) 
+        !empty($_FILES["Image"]["tmp_name"]) &&
+        !empty($_POST["id_Categorie"])
     ) {
-        
-        $Nom = $_POST['Nom'];
-        $Description = $_POST['Description'];
-        $Prix = $_POST['Prix'];
-        $Quantite = $_POST['Quantite'];
+        // Récupérer et nettoyer les données
+        $Nom = htmlspecialchars($_POST['Nom']);
+        $Description = htmlspecialchars($_POST['Description']);
+        $Prix = (float)$_POST['Prix'];
+        $Quantite = (int)$_POST['Quantite'];
+        $id_Categorie = (int)$_POST['id_Categorie'];
 
+        // Récupérer le contenu de l'image
         $imageData = file_get_contents($_FILES["Image"]["tmp_name"]);
 
-        $produit = new Produit(0, $imageData, $Nom, $Description, $Prix, $Quantite);
+        // Créer un objet Produit
+        $produit = new Produit(0, $imageData, $Nom, $Description, $Prix, $Quantite, $id_Categorie);
 
+        // Ajouter le produit
         $produitC->addProduit($produit);
 
+        // Rediriger vers la liste des produits
         header('Location: ListProduitBack.php');
         exit();
-    } else {
+   
+      } else {
         $error = "Please fill all the fields and upload an image.";
     }
-}
+} 
+
 ?>
 
 
 
-<?php if (!empty($error)) { echo "<div class='error'>$error</div>"; } ?>
-
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="fr">
+
+<head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
+  <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Falle7a</title>
     <!-- plugins:css -->
@@ -64,9 +80,10 @@ if (
     <link rel="stylesheet" href="BACK_OFFICE/assets/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="BACK_OFFICE/assets/images/favicon.png" />
-  </head>
-  <body>
-    <div class="container-scroller">
+</head>
+
+<body>
+<div class="container-scroller">
       <!-- partial:BACK_OFFICE/partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
@@ -405,11 +422,11 @@ if (
             </button>
           </div>
         </nav>
-        <!-- partial -->
+         <!-- partial -->
       <div class="main-panel">
           <div class="content-wrapper">
             <div class="page-header">
-              <h3 class="page-title"> Products Form  </h3>
+              <h3 class="page-title"> ajout du produit   </h3>
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="#">Forms</a></li>
@@ -422,136 +439,164 @@ if (
                 <div class="card">
                     <div class="card-body">
 
-                        <!-- Display error message if any -->
-                        <?php if (!empty($error)) { ?>
-                            <div style="color: red;"><?php echo $error; ?></div>
-                        <?php } ?>
+        <?php if (!empty($error)) : ?>
+            <div class="alert alert-danger">
+                <?= $error; ?>
+            </div>
+        <?php endif; ?>
 
-                        <form action="AddProduit.php" method="POST" enctype="multipart/form-data" class="forms-sample">
-                         <div class="form-group">
-                        <label for="Nom">Product Name</label>
-                        <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Product Name">
-                     </div>
-                   <div class="form-group">
-                      <label for="Description">Description</label>
-                      <textarea class="form-control" id="Description" name="Description" placeholder="Description"></textarea>
-                    </div>
-                     <div class="form-group">
-                        <label for="Prix">Price</label>
-                       <input type="number" class="form-control" id="Prix" name="Prix" step="0.01" placeholder="Price">
-                     </div>
+        <form method="POST" action="" enctype="multipart/form-data" class="forms-sample">
     <div class="form-group">
-        <label for="Quantite">Quantity</label>
-        <input type="number" class="form-control" id="Quantite" name="Quantite" placeholder="Quantity">
-    </div>
-    <div class="form-group">
-        <label for="Image">Product Image</label>
-        <input type="file" class="form-control" id="Image" name="Image" accept="image/*">
+        <label for="Nom">Nom du produit :</label>
+        <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Nom du produit">
     </div>
 
-    <button type="submit" class="btn btn-primary mr-2">Add Product</button>
-    <button type="reset" class="btn btn-dark">Cancel</button>
-    </form>
-        
+    <div class="form-group">
+        <label for="Description">Description :</label>
+        <textarea class="form-control" id="Description" name="Description" rows="3" placeholder="Description"></textarea>
+    </div>
 
-                    </div>
+    <div class="form-group">
+        <label for="Prix">Prix :</label>
+        <input type="number" class="form-control" id="Prix" name="Prix" step="0.01" placeholder="Prix">
+    </div>
+
+    <div class="form-group">
+        <label for="Quantite">Quantité :</label>
+        <input type="number" class="form-control" id="Quantite" name="Quantite" placeholder="Quantité">
+    </div>
+
+    <div class="form-group">
+        <label for="Image">Image :</label>
+        <input type="file" class="form-control-file" id="Image" name="Image" accept="image/*">
+    </div>
+
+    <div class="form-group">
+        <label for="id_Categorie">Catégorie :</label>
+        <select class="form-control" id="id_Categorie" name="id_Categorie">
+            <option value="">-- Sélectionner une catégorie --</option>
+            <?php foreach ($categories as $categorie) : ?>
+                <option value="<?= $categorie['id_Categorie']; ?>"><?= $categorie['Nom']; ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+    <a href="ListProduitBack.php" class="btn btn-secondary">Retour à la liste</a>
+</form>
+
+</div>
                 </div>
             </div>
         </div>
     </div>
-           
-    <script>
+    <script>         
     document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector(".forms-sample");
+    const form = document.querySelector(".forms-sample"); // Sélecteur de formulaire
 
-        form.addEventListener("submit", function (event) {
-            let isValid = true;
+    form.addEventListener("submit", function (event) {
+        let isValid = true;
 
-            // Réinitialisation des messages d'erreur
-            form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
-            form.querySelectorAll("input, textarea").forEach((input) => {
-                input.classList.remove("error", "success");
-            });
-
-            // Validation du champ "Nom"
-            const nom = form.querySelector("input[name='Nom']");
-            if (nom.value.trim() === "") {
-                isValid = false;
-                showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
-            } else {
-                showMessage(nom, "Nom valide.", true);
-            }
-
-            // Validation du champ "Image"
-            const image = form.querySelector("input[name='Image']");
-            if (image.value && !/\.(jpg|jpeg|png|gif)$/i.test(image.value)) {
-                isValid = false;
-                showMessage(image, "Le champ Image doit être un fichier valide (jpg, jpeg, png, gif).", false);
-            } else if (image.value) {
-                showMessage(image, "Image valide.", true);
-            }
-
-            // Validation du champ "Description"
-            const description = form.querySelector("textarea[name='Description']");
-            if (description.value.trim() === "") {
-                isValid = false;
-                showMessage(description, "Le champ Description ne peut pas être vide.", false);
-            } else {
-                showMessage(description, "Description valide.", true);
-            }
-
-            // Validation du champ "Prix"
-            const prix = form.querySelector("input[name='Prix']");
-            if (prix.value <= 0) {
-                isValid = false;
-                showMessage(prix, "Le champ Prix doit être supérieur à 0.", false);
-            } else {
-                showMessage(prix, "Prix valide.", true);
-            }
-
-            // Validation du champ "Quantité"
-            const quantite = form.querySelector("input[name='Quantite']");
-            if (quantite.value <= 0 || !Number.isInteger(parseFloat(quantite.value))) {
-                isValid = false;
-                showMessage(quantite, "Le champ Quantité doit être un entier positif.", false);
-            } else {
-                showMessage(quantite, "Quantité valide.", true);
-            }
-
-            // Empêche l'envoi du formulaire si des erreurs sont détectées
-            if (!isValid) {
-                event.preventDefault();
-            }
+        // Réinitialisation des messages d'erreur
+        form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
+        form.querySelectorAll("input, textarea").forEach((input) => {
+            input.classList.remove("error", "success");
         });
 
-        function showMessage(input, message, isSuccess) {
-            const messageElement = document.createElement("span");
-            messageElement.textContent = message;
-            messageElement.classList.add("error-message");
-            messageElement.style.color = isSuccess ? "green" : "red";
-            input.classList.add(isSuccess ? "success" : "error");
-            input.insertAdjacentElement("afterend", messageElement);
+        // Validation du champ "Nom"
+        const nom = form.querySelector("input[name='Nom']");
+        if (nom.value.trim() === "") {
+            isValid = false;
+            showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
+        } else {
+            showMessage(nom, "Nom valide.", true);
+        }
+
+        // Validation du champ "Image"
+        const image = form.querySelector("input[name='Image']");
+        if (image.files.length > 0 && !/\.(jpg|jpeg|png|gif)$/i.test(image.value)) {
+            isValid = false;
+            showMessage(image, "Le champ Image doit être un fichier valide (jpg, jpeg, png, gif).", false);
+        } else {
+            showMessage(image, "Image valide.", true);
+        }
+
+        // Validation du champ "Description"
+        const description = form.querySelector("textarea[name='Description']");
+        if (description.value.trim() === "") {
+            isValid = false;
+            showMessage(description, "Le champ Description ne peut pas être vide.", false);
+        } else {
+            showMessage(description, "Description valide.", true);
+        }
+
+        // Validation du champ "Prix"
+        const prix = form.querySelector("input[name='Prix']");
+        if (prix.value <= 0 || isNaN(prix.value)) {
+            isValid = false;
+            showMessage(prix, "Le champ Prix doit être supérieur à 0.", false);
+        } else {
+            showMessage(prix, "Prix valide.", true);
+        }
+
+        // Validation du champ "Quantité"
+        const quantite = form.querySelector("input[name='Quantite']");
+        if (quantite.value <= 0 || !Number.isInteger(parseFloat(quantite.value))) {
+            isValid = false;
+            showMessage(quantite, "Le champ Quantité doit être un entier positif.", false);
+        } else {
+            showMessage(quantite, "Quantité valide.", true);
+        }
+
+        // Validation du champ "Catégorie"
+        const categorie = form.querySelector("select[name='id_Categorie']");
+        if (categorie.value === "") {
+            isValid = false;
+            showMessage(categorie, "Veuillez sélectionner une catégorie.", false);
+        } else {
+            showMessage(categorie, "Catégorie valide.", true);
+        }
+
+        // Empêche l'envoi du formulaire si des erreurs sont détectées
+        if (!isValid) {
+            event.preventDefault();
         }
     });
+
+    // Fonction pour afficher un message sous chaque champ
+    function showMessage(input, message, isSuccess) {
+        const messageElement = document.createElement("span");
+        messageElement.textContent = message;
+        messageElement.classList.add("error-message");
+        messageElement.style.color = isSuccess ? "green" : "red";
+        input.classList.add(isSuccess ? "success" : "error");
+        input.insertAdjacentElement("afterend", messageElement);
+    }
+});
 </script>
 <style>
     .error {
-        border-color: red;
-    }
+    border-color: red;
+}
 
-    .success {
-        border-color: green;
-    }
+.success {
+    border-color: green;
+}
 
-    .error-message {
-        font-size: 0.9rem;
-        margin-left: 5px;
-    }
+.error-message {
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+}
+
 </style>
 
+
+    
     <!-- Include Bootstrap JS for functionality -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
