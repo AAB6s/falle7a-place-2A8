@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../Controller/OrderController.php';
+require __DIR__ . '/../../vendor/autoload.php'; // For PHPMailer
 
 $orderController = new OrderController();
 $orders = $orderController->listOrders(); // Fetch updated orders from the database
@@ -215,7 +216,7 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
     </table>
     <br>
     <div align="right">
-    <form action="checkOut.php">
+    <form action="send_email.php">
         <button id="checkoutBtn" type="submit" style="padding: 6px 12px; border: none; background-color: #007bff; color: white; border-radius: 4px; cursor: pointer; transition: transform 0.3s;">
             Check Out
         </button>

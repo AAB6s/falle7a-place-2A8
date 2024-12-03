@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../Config.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 try {
     $pdo = Config::getConnexion();
@@ -16,6 +17,8 @@ try {
     if ($statusFilter !== 'all') {
         $query .= " AND status = :status";
     }
+    $query .= " ORDER BY created_at DESC";  // Add this line to order by the latest first
+
     $stmt = $pdo->prepare($query);
 
     // Bind parameters
@@ -39,8 +42,120 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
 
     if ($action === 'deliver') {
         $status = 'delivered';
+    
+        $query = "SELECT full_name FROM transaction WHERE transaction_id = :transaction_id";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':transaction_id' => $transactionId]);
+        $specificTransaction = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$specificTransaction) {
+            die("Transaction not found.");
+        }
+    
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; // Set SMTP server
+            $mail->SMTPAuth = true;
+            $mail->Username = 'mehdialkanas@gmail.com'; // SMTP username
+            $mail->Password = ''; // SMTP password
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+    
+            $mail->setFrom('mehdialkanas@gmail.com', 'Falle7a');
+            $mail->addAddress('mahdouchtennis@gmail.com'); // Static recipient email
+    
+            $mail->isHTML(true);
+            $mail->Subject = 'Order Confirmation';
+            $mail->Body = "
+<!DOCTYPE html>
+<html>
+<body style='font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;'>
+    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); overflow: hidden; border: 1px solid #eaeaea;'>
+        <div style='background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center;'>
+            <h1>Order Confirmation</h1>
+        </div>
+        <div style='padding: 20px; color: #333333;'>
+            <p style='font-size: 16px;'>Dear <strong>" . htmlspecialchars($specificTransaction['full_name']) . "</strong>,</p>
+            <p>Thank you for placing your order with Falle7a!</p>
+            <p>We’re excited to let you know that your order is on its way and will arrive soon. You can track your order or get more information about your purchase by contacting our support team.</p>
+            <p>If you have any questions or concerns, feel free to reach out to us at <a href='mailto:support@falle7a.com' style='color: #4CAF50; text-decoration: none;'>support@falle7a.com</a>.</p>
+            <p style='font-size: 16px;'>Thank you for choosing Falle7a. We look forward to serving you again!</p>
+            <p>Best regards,</p>
+            <p>Your Falle7a Team</p>
+        </div>
+        <div style='background-color: #f1f1f1; color: #888888; padding: 10px; text-align: center; font-size: 12px;'>
+            &copy; " . date('Y') . " Falle7a. All rights reserved.<br>
+            Visit us at <a href='https://www.falle7a.com' style='color: #4CAF50; text-decoration: none;'>www.falle7a.com</a>.
+        </div>
+    </div>
+</body>
+</html>";
+
+            $mail->send();
+        } catch (Exception $e) {
+            die('Email could not be sent. Mailer Error: ' . $mail->ErrorInfo);
+        }
+    
+    
+
+
+
+
     } elseif ($action === 'cancel') {
         $status = 'canceled';
+        $query = "SELECT full_name FROM transaction WHERE transaction_id = :transaction_id";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':transaction_id' => $transactionId]);
+        $specificTransaction = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$specificTransaction) {
+            die("Transaction not found.");
+        }
+    
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; // Set SMTP server
+            $mail->SMTPAuth = true;
+            $mail->Username = 'mehdialkanas@gmail.com'; // SMTP username
+            $mail->Password = ''; // SMTP password
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+    
+            $mail->setFrom('mehdialkanas@gmail.com', 'Falle7a');
+            $mail->addAddress('mahdouchtennis@gmail.com'); // Static recipient email
+    
+            $mail->isHTML(true);
+            $mail->Subject = 'Order Confirmation';
+            $mail->Body = "
+            <!DOCTYPE html>
+<html>
+<body style='font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;'>
+    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); overflow: hidden; border: 1px solid #eaeaea;'>
+        <div style='background-color: #d9534f; color: #ffffff; padding: 20px; text-align: center;'>
+            <h1>Order Update</h1>
+        </div>
+        <div style='padding: 20px; color: #333333;'>
+            <p style='font-size: 16px;'>Dear <strong>" . htmlspecialchars($specificTransaction['full_name']) . "</strong>,</p>
+            <p>We regret to inform you that your order has been canceled due to an unexpected issue.</p>
+            <p>If you believe this was an error or have any questions, please do not hesitate to contact us at <a href='mailto:support@falle7a.com' style='color: #4CAF50; text-decoration: none;'>support@falle7a.com</a>.</p>
+            <p style='font-size: 16px;'>We sincerely apologize for the inconvenience and appreciate your understanding.</p>
+            <p>Thank you for choosing Falle7a. We hope to serve you better in the future.</p>
+        </div>
+        <div style='background-color: #f1f1f1; color: #888888; padding: 10px; text-align: center; font-size: 12px;'>
+            &copy;"  . date('Y') . " Falle7a. All rights reserved.<br>
+            Visit us at <a href='https://www.falle7a.com' style='color: #4CAF50; text-decoration: none;'>www.falle7a.com</a>
+        </div>
+    </div>
+</body>
+</html>";
+
+    
+            $mail->send();
+        } catch (Exception $e) {
+            die('Email could not be sent. Mailer Error: ' . $mail->ErrorInfo);
+        }
     }
 
     $query = "UPDATE transaction SET status = :status WHERE transaction_id = :transaction_id";
@@ -454,18 +569,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
         </div>
 
         <!-- Display Transactions -->
-        <div class="row">
-            <div class="col-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Order Status</h4>
-                        <?php if (empty($transaction)) : ?>
-                        <p>No transaction found.</p>
-                        <?php else : ?>
-                            <div class="table-responsive">
-                                 <table style="color: white;"class="table table-bordered table-striped">
-                                 <thead>
-                                    <tr>
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Order Status</h4>
+                <?php if (empty($transaction)) : ?>
+                    <p>No transaction found.</p>
+                <?php else : ?>
+                    <div class="table-responsive">
+                        <table style="color: white;" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
                                     <th>Transaction ID</th>
                                     <th>Action</th>
                                     <th>Full Name</th>
@@ -474,9 +589,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
                                     <th>Products Purchased</th>
                                     <th>Status</th>
                                     <th>Created At</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <?php foreach ($transaction as $transaction) : ?>
                                     <tr>
                                         <td><?= htmlspecialchars($transaction['transaction_id']); ?></td>
@@ -497,9 +612,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
                                             if ($products) {
                                                 echo "<ul style='margin: 0; padding-left: 15px;'>";
                                                 foreach ($products as $product) {
-                                                    echo "<li>" . htmlspecialchars($product['name']) . " - " .
-                                                        htmlspecialchars($product['quantity']) . " pcs → " .
-                                                        htmlspecialchars(number_format($product['price'])) . " TND</li>";
+                                                    echo "<li>" . htmlspecialchars($product['name']) . " - " . 
+                                                         htmlspecialchars($product['quantity']) . " pcs → " . 
+                                                         htmlspecialchars(number_format($product['price'])) . " TND</li>";
                                                 }
                                                 echo "</ul>";
                                             } else {
@@ -511,14 +626,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
                                         <td><?= htmlspecialchars($transaction['created_at']); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
-                                </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
-                    </div>  
-                 </div>
-            </div>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>  
         </div>
+    </div>
+</div>
+
             
                     <!-- ======= Footer ======= -->
                     <footer class="footer">
