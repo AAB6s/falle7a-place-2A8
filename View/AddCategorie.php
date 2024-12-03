@@ -418,7 +418,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php endif; ?>
 
 <!-- Formulaire pour ajouter une catégorie -->
-<form method="POST" action="">
+<!-- Formulaire d'ajout -->
+<form method="POST" action="" class="forms-sample">
     <div class="form-group">
         <label for="Nom">Nom de la catégorie :</label>
         <input type="text" class="form-control" id="Nom" name="Nom" placeholder="Nom de la catégorie">
@@ -430,64 +431,64 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
+    const form = document.querySelector(".forms-sample");  // Sélectionner le formulaire
 
-    form.addEventListener("submit", function (event) {
-        let isValid = true;
+    // Vérifier si le formulaire existe
+    if (form) {
+        form.addEventListener("submit", function (event) {
+            let isValid = true;
 
-        // Clear previous error messages and styling
-        form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
-        form.querySelectorAll("input, textarea").forEach((input) => {
-            input.classList.remove("error", "success");
+            // Réinitialiser les messages d'erreur et les classes
+            form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
+            form.querySelectorAll("input").forEach((input) => {
+                input.classList.remove("error", "success");
+            });
+
+            // Validation pour le champ "Nom"
+            const nom = form.querySelector("input[name='Nom']");
+            if (nom.value.trim() === "") {
+                isValid = false;
+                showMessage(nom, "Le champ Nom ne peut pas être vide.", false);  // Message rouge si invalide
+            } else {
+                showMessage(nom, "Nom valide.", true);  // Message vert si valide
+            }
+
+            // Empêcher la soumission si la validation échoue
+            if (!isValid) {
+                event.preventDefault();
+            }
         });
+    }
 
-        // Validate the "Nom" field
-        const nom = form.querySelector("input[name='Nom']");
-        if (nom.value.trim() === "") {
-            isValid = false;
-            showMessage(nom, "Le champ Nom ne peut pas être vide.", false);  // Message rouge si invalide
-        } else {
-            showMessage(nom, "Nom valide.", true);  // Message vert si valide
-        }
-
-        // Prevent form submission if validation fails
-        if (!isValid) {
-            event.preventDefault();
-        }
-    });
-
+    // Fonction pour afficher les messages d'erreur ou de succès
     function showMessage(input, message, isSuccess) {
-        // Create the message element
         const messageElement = document.createElement("span");
         messageElement.textContent = message;
         messageElement.classList.add("error-message");
-        messageElement.style.color = isSuccess ? "green" : "red";  // Green if valid, red if invalid
+        messageElement.style.color = isSuccess ? "green" : "red";  // Vert si valide, rouge si invalide
 
-        // Add success or error class to the input field
         input.classList.add(isSuccess ? "success" : "error");
 
-        // Insert the message directly under the input field (parent element)
-        // Ensure the message goes under the specific input field
-        input.closest('.form-group').appendChild(messageElement); 
+        // Insérer le message sous l'input
+        input.closest('.form-group').appendChild(messageElement);
     }
 });
-
 </script>
+
 <style>
     .error {
-    border-color: red;
-}
+        border-color: red;
+    }
 
-.success {
-    border-color: green;
-}
+    .success {
+        border-color: green;
+    }
 
-.error-message {
-    font-size: 0.9rem;
-    margin-top: 5px;  /* Adds space between the input field and the message */
-    display: block;  /* Ensures the message is displayed in a block below the input */
-}
-
+    .error-message {
+        font-size: 0.9rem;
+        margin-top: 5px;  /* Espace entre le champ et le message */
+        display: block;  /* Afficher le message en bloc sous le champ */
+    }
 </style>
 
 

@@ -1,12 +1,12 @@
 <?php
-include '../Controller/CategorieC.php'; // Inclure le contrôleur des catégories
-include_once '../Model/Categorie.php'; // Inclure le modèle de catégorie
+include '../Controller/CategorieC.php'; 
+include_once '../Model/Categorie.php'; 
 
-$error = ""; // Initialiser la variable d'erreur
-$categorieC = new CategorieC(); // Créer une instance du contrôleur des catégories
+$error = ""; 
+$categorieC = new CategorieC(); 
 $categorie = null;
 
-// Vérifiez si un ID de catégorie est passé dans l'URL
+
 if (isset($_GET['id_Categorie'])) {
     $id_Categorie = htmlspecialchars($_GET['id_Categorie']);
     // Récupérez les données existantes de la catégorie par son ID
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Nom"], $_POST["id_Cat
 <head>
 <meta charset="utf-8">
     <meta name="viewport" content="wId_Produitth=device-wId_Produitth, initial-scale=1, shrink-to-fit=no">
-    <title>Modifier Produit - Falle7a</title>
+    <title>Modifier categorie - Falle7a</title>
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="BACK_OFFICE/assets/css/style.css">
@@ -396,7 +396,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Nom"], $_POST["id_Cat
                 </ol>
               </nav>
             </div>
-    <!-- Formulaire de modification -->
+   
     <div class="col-md-6 grId_Produit-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -406,23 +406,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["Nom"], $_POST["id_Cat
                 </div>
 
     <?php if (!empty($error)): ?>
-        <p style="color: red;"><?php echo $error; ?></p> <!-- Affiche l'erreur si elle existe -->
+        <p style="color: red;"><?php echo $error; ?></p> 
     <?php endif; ?>
 
     <!-- Formulaire pour modifier une catégorie -->
-    <form method="POST">
+    <form method="POST" class="forms-sample">
     <div class="form-group">
         <label for="Nom">Nom de la catégorie :</label>
-        <input type="text" class="form-control" id="Nom" name="Nom" value="<?php echo $categorie ? $categorie->getNom() : ''; ?>" required>
+        <input type="text" class="form-control" id="Nom" name="Nom" value="<?php echo $categorie ? $categorie->getNom() : ''; ?>">
     </div>
 
     <input type="hidden" name="id_Categorie" value="<?php echo $categorie ? $categorie->getIdCategorie() : ''; ?>">
 
     <button type="submit" class="btn btn-primary">Mettre à jour</button> 
     <a href="ListeCategorieBack.php" class="btn btn-secondary btn-sm">
-    <i class="fas fa-arrow-left"></i> Retour à la liste
-</a>
+        <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".forms-sample");
+
+        // Vérifier si le formulaire existe
+        if (form) {
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                // Réinitialiser les messages d'erreur et les classes
+                form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
+                form.querySelectorAll("input").forEach((input) => {
+                    input.classList.remove("error", "success");
+                });
+
+                // Validation pour le champ "Nom"
+                const nom = form.querySelector("input[name='Nom']");
+                if (nom.value.trim() === "") {
+                    isValid = false;
+                    showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
+                } else {
+                    showMessage(nom, "Nom valide.", true);
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // Empêche l'envoi du formulaire si une erreur est trouvée
+                }
+            });
+        }
+
+        // Fonction pour afficher les messages d'erreur ou de succès
+        function showMessage(input, message, isSuccess) {
+            const messageElement = document.createElement("span");
+            messageElement.textContent = message;
+            messageElement.classList.add("error-message");
+            messageElement.style.color = isSuccess ? "green" : "red";
+
+            input.classList.add(isSuccess ? "success" : "error");
+            input.insertAdjacentElement("afterend", messageElement); // Insérer le message après le champ
+        }
+    });
+</script>
+
+<style>
+    .error {
+        border-color: red;
+    }
+
+    .success {
+        border-color: green;
+    }
+
+    .error-message {
+        font-size: 0.9rem;
+        margin-left: 5px;
+    }
+</style>
 
 
 </body>

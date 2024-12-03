@@ -441,9 +441,7 @@ if (isset($_POST["Nom"], $_POST["Description"], $_POST["Prix"], $_POST["Quantite
     <?php if (!empty($error)): ?>
         <div class="alert alert-danger"><?php echo $error; ?></div>
     <?php endif; ?>
-    <form method="POST" action="" enctype="multipart/form-data" class="forms-sample">
-    <input type="hidden" name="Id_Produit" value="<?php echo $produit['id_Produit']; ?>">
-
+    <form class="forms-sample" action="" method="POST" enctype="multipart/form-data">
     <div class="form-group">
         <label for="Nom">Nom du produit :</label>
         <input type="text" class="form-control" id="Nom" name="Nom" value="<?php echo htmlspecialchars($produit['Nom']); ?>">
@@ -474,14 +472,17 @@ if (isset($_POST["Nom"], $_POST["Description"], $_POST["Prix"], $_POST["Quantite
             <?php endforeach; ?>
         </select>
     </div>
-
     <div class="form-group">
-        <label for="Image">Image :</label>
+        <label for="Image">Image</label>
         <input type="file" class="form-control" id="Image" name="Image">
-        <?php if (!empty($produit['Image'])): ?>
-            <img src="../uploads/<?php echo htmlspecialchars($produit['Image']); ?>" alt="Image Produit" width="100" class="mt-2">
-        <?php endif; ?>
+
+        
+        <small>Image actuelle :<img class="img-fluid"
+                     src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" 
+                   ></small>
     </div>
+
+    
 
     <button type="submit" class="btn btn-primary">Mettre à jour</button>
     <a href="ListProduitBack.php" class="btn btn-secondary btn-sm">
@@ -493,94 +494,73 @@ if (isset($_POST["Nom"], $_POST["Description"], $_POST["Prix"], $_POST["Quantite
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".forms-sample");
 
-    form.addEventListener("submit", function (event) {
-        let isValid = true;
+        form.addEventListener("submit", function (event) {
+            let isValid = true;
 
-        // Réinitialisation des messages d'erreur et des classes d'état
-        form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
-        form.querySelectorAll("input, textarea, select").forEach((input) => {
-            input.classList.remove("error", "success");
+            // Remove all previous error/success messages
+            form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
+            form.querySelectorAll("input, textarea, select").forEach((input) => {
+                input.classList.remove("error", "success");
+            });
+
+            // Validation for each field
+            const fields = [
+                { selector: "input[name='Nom']", validate: value => value.trim() !== "", errorMsg: "Le champ Nom ne peut pas être vide." },
+                { selector: "textarea[name='Description']", validate: value => value.trim() !== "", errorMsg: "Le champ Description ne peut pas être vide." },
+                { selector: "input[name='Prix']", validate: value => parseFloat(value) > 0 && !isNaN(value), errorMsg: "Le champ Prix doit être supérieur à 0." },
+                { selector: "input[name='Quantite']", validate: value => parseInt(value) > 0 && Number.isInteger(parseFloat(value)), errorMsg: "Le champ Quantité doit être un entier positif." },
+                { selector: "select[name='id_Categorie']", validate: value => value !== "", errorMsg: "Veuillez sélectionner une catégorie." },
+            ];
+
+            fields.forEach(({ selector, validate, errorMsg }) => {
+                const input = form.querySelector(selector);
+                const isFieldValid = validate(input.value);
+
+                if (!isFieldValid) {
+                    isValid = false;
+                    showMessage(input, errorMsg, false);
+                } else {
+                    showMessage(input, "Champ valide.", true);
+                }
+            });
+
+            // Special validation for image field
+            const image = form.querySelector("input[name='Image']");
+            if (image.files.length > 0) {
+                const fileName = image.files[0].name;
+                if (!/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
+                    isValid = false;
+                    showMessage(image, "Le champ Image doit être un fichier valide (jpg, jpeg, png, gif).", false);
+                } else {
+                    showMessage(image, "Image valide.", true);
+                }
+            }
+
+            // Prevent form submission if validation fails
+            if (!isValid) {
+                event.preventDefault();
+            }
         });
 
-        // Validation du champ "Nom"
-        const nom = form.querySelector("input[name='Nom']");
-        if (nom.value.trim() === "") {
-            isValid = false;
-            showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
-        } else {
-            showMessage(nom, "Nom valide.", true);
-        }
+        function showMessage(input, message, isSuccess) {
+            // Create the message span
+            const messageElement = document.createElement("span");
+            messageElement.textContent = message;
+            messageElement.classList.add("error-message");
+            messageElement.style.color = isSuccess ? "green" : "red";
 
-        // Validation du champ "Description"
-        const description = form.querySelector("textarea[name='Description']");
-        if (description.value.trim() === "") {
-            isValid = false;
-            showMessage(description, "Le champ Description ne peut pas être vide.", false);
-        } else {
-            showMessage(description, "Description valide.", true);
-        }
+            // Add a success or error class to the input
+            input.classList.add(isSuccess ? "success" : "error");
 
-        // Validation du champ "Prix"
-        const prix = form.querySelector("input[name='Prix']");
-        if (prix.value <= 0) {
-            isValid = false;
-            showMessage(prix, "Le champ Prix doit être supérieur à 0.", false);
-        } else {
-            showMessage(prix, "Prix valide.", true);
-        }
-
-        // Validation du champ "Quantité"
-        const quantite = form.querySelector("input[name='Quantite']");
-        if (quantite.value <= 0 || !Number.isInteger(parseFloat(quantite.value))) {
-            isValid = false;
-            showMessage(quantite, "Le champ Quantité doit être un entier positif.", false);
-        } else {
-            showMessage(quantite, "Quantité valide.", true);
-        }
-
-        // Validation du champ "Catégorie"
-        const categorie = form.querySelector("select[name='id_Categorie']");
-        if (categorie.value === "") {
-            isValid = false;
-            showMessage(categorie, "Veuillez sélectionner une catégorie.", false);
-        } else {
-            showMessage(categorie, "Catégorie valide.", true);
-        }
-
-        // Validation du champ "Image" (facultatif)
-        const image = form.querySelector("input[name='Image']");
-        if (image.files.length > 0) {
-            const file = image.files[0];
-            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-            if (!allowedExtensions.exec(file.name)) {
-                isValid = false;
-                showMessage(image, "Le fichier doit être une image (jpg, jpeg, png, gif).", false);
-            } else {
-                showMessage(image, "Image valide.", true);
-            }
-        }
-
-        // Empêche l'envoi du formulaire si des erreurs sont détectées
-        if (!isValid) {
-            event.preventDefault();
+            // Insert the message directly below the input field
+            const parent = input.parentElement;
+            parent.appendChild(messageElement);
         }
     });
-
-    // Fonction pour afficher les messages d'erreur ou de succès
-    function showMessage(input, message, isSuccess) {
-        const messageElement = document.createElement("span");
-        messageElement.textContent = message;
-        messageElement.classList.add("error-message");
-        messageElement.style.color = isSuccess ? "green" : "red";
-        input.classList.add(isSuccess ? "success" : "error");
-        input.insertAdjacentElement("afterend", messageElement);
-    }
-});
-
 </script>
 
 <style>
@@ -597,6 +577,7 @@ if (isset($_POST["Nom"], $_POST["Description"], $_POST["Prix"], $_POST["Quantite
         margin-left: 5px;
     }
 </style>
+
 
 <script src="BACK_OFFICE/assets/vendors/js/vendor.bundle.base.js"></script>
 <script src="BACK_OFFICE/assets/js/off-canvas.js"></script>

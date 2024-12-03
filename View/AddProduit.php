@@ -67,7 +67,7 @@ if (
     <!-- Required meta tags -->
   <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Falle7a</title>
+    <title> Ajout produit - Falle7a</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="BACK_OFFICE/assets/vendors/css/vendor.bundle.base.css">
@@ -490,90 +490,105 @@ if (
             </div>
         </div>
     </div>
-    <script>         
+    <script>
     document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector(".forms-sample"); // Sélecteur de formulaire
+        const form = document.querySelector(".forms-sample");
 
-    form.addEventListener("submit", function (event) {
-        let isValid = true;
+        form.addEventListener("submit", function (event) {
+            let isValid = true;
 
-        // Réinitialisation des messages d'erreur
-        form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
-        form.querySelectorAll("input, textarea").forEach((input) => {
-            input.classList.remove("error", "success");
+            // Supprimer les anciens messages d'erreur
+            form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
+            form.querySelectorAll("input, textarea, select").forEach((input) => {
+                input.classList.remove("error", "success");
+            });
+
+            // Fonction pour afficher un message sous un champ
+            function showMessage(input, message, isSuccess) {
+                const parent = input.closest(".form-group");
+                let messageElement = parent.querySelector(".error-message");
+
+                // Créer le message d'erreur s'il n'existe pas
+                if (!messageElement) {
+                    messageElement = document.createElement("small");
+                    messageElement.classList.add("error-message");
+                    parent.appendChild(messageElement);
+                }
+
+                // Mettre à jour le message et le style
+                messageElement.textContent = message;
+                messageElement.style.color = isSuccess ? "green" : "red";
+                input.classList.add(isSuccess ? "success" : "error");
+            }
+
+            // Validation du champ Nom
+            const nom = form.querySelector("input[name='Nom']");
+            if (nom.value.trim() === "") {
+                isValid = false;
+                showMessage(nom, "Le champ Nom est obligatoire.", false);
+            } else {
+                showMessage(nom, "Nom valide.", true);
+            }
+
+            // Validation du champ Description
+            const description = form.querySelector("textarea[name='Description']");
+            if (description.value.trim() === "") {
+                isValid = false;
+                showMessage(description, "Le champ Description est obligatoire.", false);
+            } else {
+                showMessage(description, "Description valide.", true);
+            }
+
+            // Validation du champ Prix
+            const prix = form.querySelector("input[name='Prix']");
+            if (prix.value <= 0 || isNaN(prix.value)) {
+                isValid = false;
+                showMessage(prix, "Le champ Prix doit être un nombre positif.", false);
+            } else {
+                showMessage(prix, "Prix valide.", true);
+            }
+
+            // Validation du champ Quantité
+            const quantite = form.querySelector("input[name='Quantite']");
+            if (quantite.value <= 0 || !Number.isInteger(parseFloat(quantite.value))) {
+                isValid = false;
+                showMessage(quantite, "Le champ Quantité doit être un entier positif.", false);
+            } else {
+                showMessage(quantite, "Quantité valide.", true);
+            }
+
+            // Validation du champ Image
+            const image = form.querySelector("input[name='Image']");
+            if (image.files.length > 0) {
+                const fileName = image.files[0].name;
+                if (!/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
+                    isValid = false;
+                    showMessage(image, "Le champ Image doit être un fichier valide (jpg, jpeg, png, gif).", false);
+                } else {
+                    showMessage(image, "Image valide.", true);
+                }
+            } else {
+                isValid = false;
+                showMessage(image, "Aucun fichier sélectionné.", false);
+            }
+
+            // Validation du champ Catégorie
+            const categorie = form.querySelector("select[name='id_Categorie']");
+            if (categorie.value === "") {
+                isValid = false;
+                showMessage(categorie, "Veuillez sélectionner une catégorie.", false);
+            } else {
+                showMessage(categorie, "Catégorie valide.", true);
+            }
+
+            // Bloquer la soumission du formulaire si non valide
+            if (!isValid) {
+                event.preventDefault();
+            }
         });
-
-        // Validation du champ "Nom"
-        const nom = form.querySelector("input[name='Nom']");
-        if (nom.value.trim() === "") {
-            isValid = false;
-            showMessage(nom, "Le champ Nom ne peut pas être vide.", false);
-        } else {
-            showMessage(nom, "Nom valide.", true);
-        }
-
-        // Validation du champ "Image"
-        const image = form.querySelector("input[name='Image']");
-        if (image.files.length > 0 && !/\.(jpg|jpeg|png|gif)$/i.test(image.value)) {
-            isValid = false;
-            showMessage(image, "Le champ Image doit être un fichier valide (jpg, jpeg, png, gif).", false);
-        } else {
-            showMessage(image, "Image valide.", true);
-        }
-
-        // Validation du champ "Description"
-        const description = form.querySelector("textarea[name='Description']");
-        if (description.value.trim() === "") {
-            isValid = false;
-            showMessage(description, "Le champ Description ne peut pas être vide.", false);
-        } else {
-            showMessage(description, "Description valide.", true);
-        }
-
-        // Validation du champ "Prix"
-        const prix = form.querySelector("input[name='Prix']");
-        if (prix.value <= 0 || isNaN(prix.value)) {
-            isValid = false;
-            showMessage(prix, "Le champ Prix doit être supérieur à 0.", false);
-        } else {
-            showMessage(prix, "Prix valide.", true);
-        }
-
-        // Validation du champ "Quantité"
-        const quantite = form.querySelector("input[name='Quantite']");
-        if (quantite.value <= 0 || !Number.isInteger(parseFloat(quantite.value))) {
-            isValid = false;
-            showMessage(quantite, "Le champ Quantité doit être un entier positif.", false);
-        } else {
-            showMessage(quantite, "Quantité valide.", true);
-        }
-
-        // Validation du champ "Catégorie"
-        const categorie = form.querySelector("select[name='id_Categorie']");
-        if (categorie.value === "") {
-            isValid = false;
-            showMessage(categorie, "Veuillez sélectionner une catégorie.", false);
-        } else {
-            showMessage(categorie, "Catégorie valide.", true);
-        }
-
-        // Empêche l'envoi du formulaire si des erreurs sont détectées
-        if (!isValid) {
-            event.preventDefault();
-        }
     });
-
-    // Fonction pour afficher un message sous chaque champ
-    function showMessage(input, message, isSuccess) {
-        const messageElement = document.createElement("span");
-        messageElement.textContent = message;
-        messageElement.classList.add("error-message");
-        messageElement.style.color = isSuccess ? "green" : "red";
-        input.classList.add(isSuccess ? "success" : "error");
-        input.insertAdjacentElement("afterend", messageElement);
-    }
-});
 </script>
+
 <style>
     .error {
     border-color: red;
