@@ -8,6 +8,7 @@ class Produit
     public float $prix;
     public int $quantite;
     public int $id_Categorie;
+    public ?int $rating;  // Ajout de l'attribut rating
 
     // Constructeur pour initialiser les propriétés
     public function __construct(
@@ -17,7 +18,8 @@ class Produit
         string $description,
         float $prix,
         int $quantite,
-        int $id_Categorie
+        int $id_Categorie,
+        ?int $rating = null  // Ajouter le rating dans le constructeur avec une valeur par défaut de NULL
     ) {
         $this->id_Produit = $id_Produit;
         $this->image = $image;
@@ -26,6 +28,7 @@ class Produit
         $this->prix = $prix;
         $this->quantite = $quantite;
         $this->id_Categorie = $id_Categorie;
+        $this->rating = $rating; // Initialiser la propriété rating
     }
 
     // Getters et Setters
@@ -103,6 +106,18 @@ class Produit
     public function setIdCategorie(int $id_Categorie): self
     {
         $this->id_Categorie = $id_Categorie;
+        return $this;
+    }
+
+    // Getter et Setter pour le rating
+    public function getRating(): ?int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(?int $rating): self
+    {
+        $this->rating = $rating;
         return $this;
     }
 }
