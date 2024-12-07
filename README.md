@@ -8,13 +8,8 @@
 
 All features integrated with chosen templates.
 
-## UPDATE
-Improved UI significantly
-Improved back office layout
-Everything is done
-
 ## What's Next:
-- **In Progress**:  --
+- **In Progress**: Improving back office layout
 - **To-Do**: Add charts/analytics to admin page
 
 ---

@@ -5,19 +5,29 @@ require_once __DIR__ . '/../Config.php';
 
 class ServiceController 
 {
-    public function listServices() 
+    public function listServices($typeId = null) 
     {
-        try 
-        {
-            $pdo = Config::getConnexion();
-            $stmt = $pdo->prepare("SELECT * FROM service");
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } 
-        catch (Exception $e) 
-        {
-            die('Error: ' . $e->getMessage());
-        }
+        $pdo = Config::getConnexion();
+        $query = "
+            SELECT 
+                s.service_id, 
+                s.name AS service_name, 
+                s.description, 
+                t.service_type_id, 
+                t.name AS type_name,
+                t.icon 
+            FROM 
+                service s
+            INNER JOIN 
+                service_type t ON s.service_type_id = t.service_type_id
+            WHERE 
+                (:typeId IS NULL OR t.service_type_id = :typeId)
+            ORDER BY 
+                t.service_type_id ASC, s.name ASC
+        ";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['typeId' => $typeId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function addService($service) 
@@ -25,10 +35,15 @@ class ServiceController
         try 
         {
             $pdo = Config::getConnexion();
-            $query = $pdo->prepare("INSERT INTO service (name, description) VALUES (:name, :description)");
+            $query = $pdo->prepare
+            ("
+                INSERT INTO service (name, description, service_type_id) 
+                VALUES (:name, :description, :service_type_id)
+            ");
             $query->execute([
                 'name' => $service['name'],
-                'description' => $service['description']
+                'description' => $service['description'],
+                'service_type_id' => $service['service_type_id']
             ]);
         } 
         catch (Exception $e) 
@@ -72,10 +87,17 @@ class ServiceController
         try
         {
             $pdo = Config::getConnexion();
-            $query = $pdo->prepare("UPDATE service SET name = :name, description = :description WHERE service_id = :id");
-            $query->execute([
+            $query = $pdo->prepare
+            ("
+                UPDATE service 
+                SET name = :name, description = :description, service_type_id = :service_type_id 
+                WHERE service_id = :id
+            ");
+            $query->execute
+            ([
                 'name' => $data['name'],
                 'description' => $data['description'],
+                'service_type_id' => $data['service_type_id'],
                 'id' => $data['service_id']
             ]);
         } 
@@ -84,50 +106,6 @@ class ServiceController
             die('Error: ' . $e->getMessage());
         }
     }
-    
-    public function detectDuplicates() 
-    {
-        try 
-        {
-            $pdo = Config::getConnexion();
-            $query = $pdo->prepare("
-                SELECT name, COUNT(*) as count
-                FROM service
-                GROUP BY name
-                HAVING COUNT(*) > 1
-            ");
-            $query->execute();
-            return $query->fetchAll(PDO::FETCH_ASSOC);
-        } 
-        catch (Exception $e) 
-        {
-            die('Error: ' . $e->getMessage());
-        }
-    }
-
-    public function deleteDuplicates() 
-    {
-        try 
-        {
-            $pdo = Config::getConnexion();
-            $query = $pdo->prepare("
-                DELETE s1
-                FROM service s1
-                INNER JOIN (
-                    SELECT name, MAX(service_id) as latest_id
-                    FROM service
-                    GROUP BY name
-                ) s2 
-                ON s1.name = s2.name AND s1.service_id != s2.latest_id
-            ");
-            $query->execute();
-            return $query->rowCount();
-        } 
-        catch (Exception $e) 
-        {
-            die('Error: ' . $e->getMessage());
-        }
-    }
-}
+};
 
 ?>

@@ -5,43 +5,51 @@ require_once __DIR__ . '/../Config.php';
 
 class ServiceRequestController 
 {
-    public function listRequests() 
+    public function listRequests($status = null, $client_id = null) 
     {
         try 
         {
             $pdo = Config::getConnexion();
-            $stmt = $pdo->prepare("SELECT * FROM servicerequest");
-            $stmt->execute();
+            $query = 
+            "
+                SELECT * FROM servicerequest 
+                WHERE (:status IS NULL OR status = :status)
+                AND (:client_id IS NULL OR client_id = :client_id)
+            ";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute
+            ([
+                ':status' => $status,
+                ':client_id' => $client_id
+            ]);
+    
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } 
         catch (Exception $e) 
         {
             die('Error: ' . $e->getMessage());
         }
-    }
+    }    
 
     public function addRequest(ServiceRequest $request) 
     {
         try 
         {
             $pdo = Config::getConnexion();
-            $query = $pdo->prepare
-            ("
+            $query = $pdo->prepare("
                 INSERT INTO servicerequest 
                 (client_id, custom_name, custom_description, worker_count, location, date_needed, date_requested, status) 
                 VALUES 
                 (:client_id, :custom_name, :custom_description, :worker_count, :location, :date_needed, :date_requested, :status)
             ");
             
-            $query->execute
-            (
-                [
-                'client_id' => $request->getClientId(),
+            $query->execute([
+                'client_id' => $request->getClientId() ?? null,
                 'custom_name' => $request->getCustomName(),
                 'custom_description' => $request->getCustomDescription(),
                 'worker_count' => $request->getWorkerCount(),
                 'location' => $request->getLocation(),
-                'date_needed' => $request->getDateNeeded()->format('Y-m-d'),
+                'date_needed' => $request->getDateNeeded()->format('Y-m-d H:i:s'),
                 'date_requested' => $request->getDateRequested()->format('Y-m-d H:i:s'),
                 'status' => $request->getStatus()
             ]);
@@ -50,7 +58,7 @@ class ServiceRequestController
         {
             die('Error: ' . $e->getMessage());
         }
-    }      
+    }         
 
     public function deleteRequest($id) 
     {

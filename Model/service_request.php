@@ -15,7 +15,7 @@ class ServiceRequest
     public function __construct
     (
         int $requestId, 
-        int $clientId, 
+        ?int $clientId = null, 
         ?string $customName, 
         ?string $customDescription, 
         int $workerCount, 
@@ -39,8 +39,8 @@ class ServiceRequest
     public function getRequestId(): int { return $this->requestId; }
     public function setRequestId(int $requestId): void { $this->requestId = $requestId; }
 
-    public function getClientId(): int { return $this->clientId; }
-    public function setClientId(int $clientId): void { $this->clientId = $clientId; }
+    public function getClientId(): ?int { return $this->clientId; }
+    public function setClientId(?int $clientId): void { $this->clientId = $clientId; }    
 
     public function getCustomName(): ?string { return $this->customName; }
     public function setCustomName(?string $customName): void { $this->customName = $customName; }
