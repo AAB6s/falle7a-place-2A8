@@ -1,27 +1,25 @@
 <?php
-include '../Controller/categorieC.php'; // Inclusion du contrôleur des catégories
-include_once '../Model/Categorie.php'; // Inclusion du modèle des catégories
+include '../Controller/categorieC.php'; 
+include_once '../Model/Categorie.php'; 
 
-$error = ""; // Variable pour stocker les erreurs
+$error = ""; 
 
-// Initialisation du contrôleur de catégories
 $categorieC = new CategorieC();
 
-// Traitement de la requête POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Vérification de la présence des champs requis
+   
     if (isset($_POST["Nom"])) {
-        // Validation des données
-        $Nom = htmlspecialchars(trim($_POST["Nom"])); // Nettoyage du champ Nom
+        
+        $Nom = htmlspecialchars(trim($_POST["Nom"])); 
 
         if (!empty($Nom)) {
-            // Création d'un nouvel objet Categorie
-            $categorie = new Categorie(null, $Nom); // `null` pour l'ID car il est auto-incrémenté
+            
+            $categorie = new Categorie(null, $Nom); 
 
-            // Ajout de la catégorie via le contrôleur
+           
             $categorieC->AddCategorie($categorie);
 
-            // Redirection après ajout
+            
             header('Location: ListeCategorieBack.php');
             exit();  
         } else {
@@ -412,13 +410,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <h4>Ajouter une nouvelle catégorie</h4>
 
-    <!-- Affichage des erreurs -->
+   
     <?php if ($error): ?>
     <div style="color: red;"><?php echo $error; ?></div>
 <?php endif; ?>
 
-<!-- Formulaire pour ajouter une catégorie -->
-<!-- Formulaire d'ajout -->
+
 <form method="POST" action="" class="forms-sample">
     <div class="form-group">
         <label for="Nom">Nom de la catégorie :</label>
@@ -431,45 +428,45 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector(".forms-sample");  // Sélectionner le formulaire
+    const form = document.querySelector(".forms-sample");  
 
-    // Vérifier si le formulaire existe
+    
     if (form) {
         form.addEventListener("submit", function (event) {
             let isValid = true;
 
-            // Réinitialiser les messages d'erreur et les classes
+            
             form.querySelectorAll(".error-message").forEach((msg) => msg.remove());
             form.querySelectorAll("input").forEach((input) => {
                 input.classList.remove("error", "success");
             });
 
-            // Validation pour le champ "Nom"
+           
             const nom = form.querySelector("input[name='Nom']");
             if (nom.value.trim() === "") {
                 isValid = false;
-                showMessage(nom, "Le champ Nom ne peut pas être vide.", false);  // Message rouge si invalide
+                showMessage(nom, "Le champ Nom ne peut pas être vide.", false);  
             } else {
-                showMessage(nom, "Nom valide.", true);  // Message vert si valide
+                showMessage(nom, "Nom valide.", true);  
             }
 
-            // Empêcher la soumission si la validation échoue
+         
             if (!isValid) {
                 event.preventDefault();
             }
         });
     }
 
-    // Fonction pour afficher les messages d'erreur ou de succès
+    
     function showMessage(input, message, isSuccess) {
         const messageElement = document.createElement("span");
         messageElement.textContent = message;
         messageElement.classList.add("error-message");
-        messageElement.style.color = isSuccess ? "green" : "red";  // Vert si valide, rouge si invalide
+        messageElement.style.color = isSuccess ? "green" : "red";  
 
         input.classList.add(isSuccess ? "success" : "error");
 
-        // Insérer le message sous l'input
+       
         input.closest('.form-group').appendChild(messageElement);
     }
 });
@@ -486,8 +483,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     .error-message {
         font-size: 0.9rem;
-        margin-top: 5px;  /* Espace entre le champ et le message */
-        display: block;  /* Afficher le message en bloc sous le champ */
+        margin-top: 5px;  
+        display: block;  
     }
 </style>
 
@@ -496,7 +493,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-     <!-- Include Bootstrap JS for functionality -->
+    
      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

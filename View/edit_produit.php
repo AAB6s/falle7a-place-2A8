@@ -24,7 +24,7 @@ if (isset($_POST["Nom"], $_POST["Description"], $_POST["Prix"], $_POST["Quantite
         $Description = $_POST['Description'];
         $Prix = floatval($_POST['Prix']);
         $Quantite = intval($_POST['Quantite']);
-        $id_Categorie = intval($_POST['id_Categorie']);  // La catégorie sélectionnée
+        $id_Categorie = intval($_POST['id_Categorie']);  
 
         // Gestion de l'image
         if (!empty($_FILES["Image"]["tmp_name"])) {
@@ -45,17 +45,16 @@ if (isset($_POST["Nom"], $_POST["Description"], $_POST["Prix"], $_POST["Quantite
                     $Image = $targetFilePath;
                 } else {
                     $error = "Erreur lors du téléchargement de l'image.";
-                    $Image = $produit['Image']; // Conserver l'ancienne image
+                    $Image = $produit['Image'];
                 }
             } else {
                 $error = "Type de fichier non supporté. Veuillez uploader une image (jpeg, png, gif).";
-                $Image = $produit['Image']; // Conserver l'ancienne image
+                $Image = $produit['Image']; 
             }
         } else {
-            $Image = $produit['Image']; // Conserver l'ancienne image si aucune nouvelle image n'est fournie
+            $Image = $produit['Image']; 
         }
 
-        // Mise à jour du produit
         $produitUpdated = new Produit($Id_Produit, $Image, $Nom, $Description, $Prix, $Quantite, $id_Categorie);
         $produitC->updateProduit($Id_Produit, $produitUpdated);
 

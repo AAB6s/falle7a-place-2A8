@@ -14,7 +14,7 @@ class ProduitC
         try {
             $query = $db->prepare($sql);
             $query->execute([
-                'Image' => $produit->getImage(), // Ce doit être le chemin de l'image, pas son contenu
+                'Image' => $produit->getImage(), 
                 'Nom' => $produit->getNom(),
                 'Description' => $produit->getDescription(),
                 'Prix' => $produit->getPrix(),
@@ -66,21 +66,27 @@ class ProduitC
 
     public function updateProduit($id_Produit, Produit $produit) {
         $sql = "UPDATE produit 
-                SET Nom = :Nom, Description = :Description, Prix = :Prix, Quantite = :Quantite, Image = :Image 
-                WHERE id_Produit = :id_Produit";
-    
+                SET Nom = :Nom, 
+                    Description = :Description, 
+                    Prix = :Prix, 
+                    Quantite = :Quantite, 
+                    Image = :Image, 
+                    id_Categorie = :id_Categorie 
+                WHERE Id_Produit = :id_Produit";
+        
         $db = config::getConnexion();
         
         try {
             $query = $db->prepare($sql);
             
             // Lier les valeurs
-            $query->bindValue(':id_Produit', $id_Produit);
-            $query->bindValue(':Nom', $produit->getNom());
-            $query->bindValue(':Description', $produit->getDescription());
-            $query->bindValue(':Prix', $produit->getPrix());
-            $query->bindValue(':Quantite', $produit->getQuantite());
-            $query->bindValue(':Image', $produit->getImage());
+            $query->bindValue(':id_Produit', $id_Produit, PDO::PARAM_INT);
+            $query->bindValue(':Nom', $produit->getNom(), PDO::PARAM_STR);
+            $query->bindValue(':Description', $produit->getDescription(), PDO::PARAM_STR);
+            $query->bindValue(':Prix', $produit->getPrix(), PDO::PARAM_STR);
+            $query->bindValue(':Quantite', $produit->getQuantite(), PDO::PARAM_INT);
+            $query->bindValue(':Image', $produit->getImage(), PDO::PARAM_STR);
+            $query->bindValue(':id_Categorie', $produit->getIdCategorie(), PDO::PARAM_INT); // Ajouter la catégorie
             
             // Exécuter la requête
             $query->execute();
@@ -88,7 +94,7 @@ class ProduitC
             die('Erreur: ' . $e->getMessage());
         }
     }
-
+    
 
 
 
@@ -161,7 +167,42 @@ public function getCategories() {
     }
 }
 
+public function rechercherProduits($searchQuery) {
+    $db = config::getConnexion(); // Database connection
     
+    try {
+        $sql = "SELECT Id_Produit, Nom, Description, Prix, Image 
+                FROM produit 
+                WHERE Nom LIKE :searchQuery"; // The LIKE clause for name search
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute(['searchQuery' => '%' . $searchQuery . '%']); // Bind the parameter
+
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Debugging: print the products found
+        echo "Found products: " . count($products); // Should show how many products were found
+
+        return $products; // Return matching products
+    } catch (Exception $e) {
+        // If any error occurs, return an empty array
+        return [];
+    }
+}
+public function updateRating($id_Produit, $rating) {
+    $sql = "UPDATE produit SET rating = :rating WHERE id_Produit = :id_Produit";
+    $db = config::getConnexion();
+    try {
+        $query = $db->prepare($sql);
+        $query->bindValue(':rating', $rating);
+        $query->bindValue(':id_Produit', $id_Produit);
+        $query->execute();
+    } catch (Exception $e) {
+        die('Erreur: ' . $e->getMessage());
+    }
+}
+
+
 
 }
 ?>

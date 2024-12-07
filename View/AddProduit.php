@@ -20,9 +20,9 @@ if (
     isset($_POST["Prix"]) &&
     isset($_POST["Quantite"]) &&
     isset($_FILES["Image"]) &&
-    isset($_POST["id_Categorie"]) // Vérifier si une catégorie a été sélectionnée
+    isset($_POST["id_Categorie"]) 
 ) {
-    // Vérifier que tous les champs sont remplis
+    
     if (
         !empty($_POST["Nom"]) &&
         !empty($_POST["Description"]) &&
@@ -38,10 +38,10 @@ if (
         $Quantite = (int)$_POST['Quantite'];
         $id_Categorie = (int)$_POST['id_Categorie'];
 
-        // Récupérer le contenu de l'image
+        
         $imageData = file_get_contents($_FILES["Image"]["tmp_name"]);
 
-        // Créer un objet Produit
+        
         $produit = new Produit(0, $imageData, $Nom, $Description, $Prix, $Quantite, $id_Categorie);
 
         // Ajouter le produit
