@@ -14,7 +14,7 @@
 All features integrated with chosen templates.
 
 ## What's Next:
-- **In Progress**: Improving back office layout
+- **In Progress**:
 - **To-Do**: Add charts/analytics to admin page
 
 ---
