@@ -40,10 +40,20 @@ if ($searchQuery && $nomCategorie) {
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        .product-item img {
+            height: 220px; 
+            object-fit: cover; 
+            width: 100%;
+        }
+    </style>
     <!-- Favicon -->
     <link href="FRONT-OFFICE/img/favicon.ico" rel="icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
+    <!-- Include Puter.js library for text-to-speech -->
+    <script src="https://js.puter.com/v2/"></script>
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap" rel="stylesheet"> 
 
@@ -189,6 +199,7 @@ if ($searchQuery && $nomCategorie) {
                     width: 100%; 
                 }
             </style>
+            
 
 <!-- Affichage des produits filtrés par prix -->
 <?php if (!empty($list)): ?>
@@ -214,6 +225,9 @@ if ($searchQuery && $nomCategorie) {
 
                         <?php if (!empty($produit['Description'])): ?>
                             <p class="text-muted mb-2"><?php echo htmlspecialchars($produit['Description'], ENT_QUOTES, 'UTF-8'); ?></p>
+                            <button class="btn btn-outline-primary" onclick="speakDescription('<?php echo htmlspecialchars($produit['Description'], ENT_QUOTES, 'UTF-8'); ?>')">
+                                            <i class="fa fa-volume-up me-2"></i> Lire la description
+                                        </button>
                         <?php else: ?>
                             <p>Description non disponible</p>
                         <?php endif; ?>
@@ -257,8 +271,17 @@ if ($searchQuery && $nomCategorie) {
     <p>Aucun produit trouvé pour ce prix.</p>
 <?php endif; ?>
 <!-- Product End -->
-
-
+<script>
+    function speakDescription(text) {
+        puter.ai.txt2speech(text)
+            .then((audio) => {
+                audio.play();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+</script>
 
 
 
@@ -511,19 +534,20 @@ if ($searchQuery && $nomCategorie) {
 
 <style>
 .star {
-    font-size: 24px; /* Taille des étoiles */
-    color: #ddd; /* Couleur par défaut (gris) */
+    font-size: 24px;
+    color: #ddd;
     cursor: pointer;
-    transition: color 0.2s ease; /* Transition douce */
+    transition: color 0.2s ease;
 }
 
 .star.filled {
-    color: #ffcc00; /* Couleur des étoiles sélectionnées (jaune) */
+    color: #ffcc00;
 }
 
 .star.highlight {
-    color: #ff9900; /* Couleur des étoiles lors du survol (orange clair) */
+    color: #ff9900;
 }
+
 </style>
 
 </body>
