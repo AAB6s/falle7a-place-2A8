@@ -189,50 +189,7 @@ public function rechercherProduits($searchQuery) {
         return [];
     }
 }
-public function updateRating($Id_Produit, $rating)
-{
-    try {
-        // Vérifier si une note existe déjà
-        $stmt = $this->pdo->prepare("SELECT rating FROM produit WHERE Id_Produit = :Id_Produit");
-        $stmt->bindParam(':Id_Produit', $Id_Produit, PDO::PARAM_INT);
-        $stmt->execute();
-        $existingRating = $stmt->fetch();
 
-        // Si une note existe déjà, on fait une mise à jour
-        if ($existingRating) {
-            $stmt = $this->pdo->prepare("UPDATE produit SET rating = :rating WHERE Id_Produit = :Id_Produit");
-            $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
-            $stmt->bindParam(':Id_Produit', $Id_Produit, PDO::PARAM_INT);
-            $stmt->execute();
-            echo "Note mise à jour avec succès!";
-            return true;
-        }
-
-        return false; // Si aucune note existante, on passe à l'insertion
-    } catch (PDOException $e) {
-        echo "Erreur lors de la mise à jour : " . $e->getMessage();
-        return false;
-    }
-}
-
-// Insère une nouvelle note pour un produit
-public function insertRating($Id_Produit, $rating)
-{
-    try {
-        // Préparer la requête pour insérer la note dans la base de données
-        $stmt = $this->pdo->prepare("INSERT INTO produit (Id_Produit, rating) VALUES (:Id_Produit, :rating)");
-        $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
-        $stmt->bindParam(':Id_Produit', $Id_Produit, PDO::PARAM_INT);
-
-        // Exécuter la requête
-        $stmt->execute();
-        echo "Note insérée avec succès!";
-        return true;
-    } catch (PDOException $e) {
-        echo "Erreur lors de l'insertion : " . $e->getMessage();
-        return false;
-    }
-}
 
 
 public function getProduitsByPrix($maxPrix) {
@@ -255,6 +212,62 @@ public function getProduitsByPrix($maxPrix) {
         return [];
     }
 }
+
+
+public function getRatingByIdProduit($Id_Produit) {
+    $db = config::getConnexion();
+    try {
+        $stmt = $db->prepare("SELECT rating FROM produit WHERE Id_Produit = :Id_Produit");
+        $stmt->bindParam(':Id_Produit', $Id_Produit, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Si une note est trouvée, on la retourne
+        if ($result) {
+            return $result['rating'];
+        } else {
+            return null; // Pas de note existante
+        }
+    } catch (PDOException $e) {
+        echo "Erreur lors de la récupération de la note : " . $e->getMessage();
+        return null;
+    }
+}
+
+public function insertRating($Id_Produit, $rating) {
+    try {
+        // Préparer la requête pour insérer la note dans la base de données
+        $stmt = $this->pdo->prepare("INSERT INTO produit (Id_Produit, rating) VALUES (:Id_Produit, :rating)");
+        $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+        $stmt->bindParam(':Id_Produit', $Id_Produit, PDO::PARAM_INT);
+
+        // Exécuter la requête
+        $stmt->execute();
+        echo "Note insérée avec succès!";
+        return true;
+    } catch (PDOException $e) {
+        echo "Erreur lors de l'insertion : " . $e->getMessage();
+        return false;
+    }
+}
+
+public function updateRating($Id_Produit, $rating) {
+    try {
+        // Préparer la requête pour mettre à jour la note dans la base de données
+        $stmt = $this->pdo->prepare("UPDATE produit SET rating = :rating WHERE Id_Produit = :Id_Produit");
+        $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+        $stmt->bindParam(':Id_Produit', $Id_Produit, PDO::PARAM_INT);
+
+        // Exécuter la requête
+        $stmt->execute();
+        echo "Note mise à jour avec succès!";
+        return true;
+    } catch (PDOException $e) {
+        echo "Erreur lors de la mise à jour : " . $e->getMessage();
+        return false;
+    }
+}
+
 
 
 

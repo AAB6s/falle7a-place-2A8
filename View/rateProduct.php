@@ -1,11 +1,10 @@
 <?php
 include '../Controller/ProduitC.php';
 
-// Vérification de la méthode POST et des données
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['Id_Produit']) && isset($_POST['rating'])) {
-        $Id_Produit = (int)$_POST['Id_Produit'];  // Assurez-vous que l'ID est un entier
-        $rating = (int)$_POST['rating'];          // Assurez-vous que la note est un entier valide
+        $Id_Produit = (int)$_POST['Id_Produit'];  // S'assurer que l'ID est un entier
+        $rating = (int)$_POST['rating'];          // S'assurer que la note est un entier valide
 
         // Affichage pour vérifier les données reçues
         echo "Id_Produit reçu : $Id_Produit, Rating reçu : $rating";

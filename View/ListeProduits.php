@@ -209,14 +209,14 @@ if ($searchQuery && $nomCategorie) {
                 <div class="product-item">
                     <div class="position-relative bg-light overflow-hidden">
                         <?php if (!empty($produit['Image']) && is_string($produit['Image'])): ?>
-                            <img class="img-fluid" src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" alt="<?php echo htmlspecialchars($produit['Nom'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <img class="img-fluid" src="data:image/jpeg;base64,<?php echo base64_encode($produit['Image']); ?>" alt="<?php echo htmlspecialchars($produit['Nom'] ?? 'Produit', ENT_QUOTES, 'UTF-8'); ?>">
                         <?php else: ?>
                             <img class="img-fluid" src="path/to/default/image.jpg" alt="Image not available">
                         <?php endif; ?>
                     </div>
                     <div class="text-center p-4">
-                        <?php if (isset($produit['Nom']) && !empty($produit['Nom'])): ?>
-                            <a class="d-block h5 mb-2" href="ViewProduct.php?id=<?php echo isset($produit['id_Produit']) ? urlencode($produit['id_Produit']) : '#'; ?>">
+                        <?php if (!empty($produit['Nom'])): ?>
+                            <a class="d-block h5 mb-2" href="ViewProduct.php?id=<?php echo !empty($produit['Id_Produit']) ? urlencode($produit['Id_Produit']) : '#'; ?>">
                                 <?php echo htmlspecialchars($produit['Nom'], ENT_QUOTES, 'UTF-8'); ?>
                             </a>
                         <?php else: ?>
@@ -226,11 +226,11 @@ if ($searchQuery && $nomCategorie) {
                         <?php if (!empty($produit['Description'])): ?>
                             <p class="text-muted mb-2"><?php echo htmlspecialchars($produit['Description'], ENT_QUOTES, 'UTF-8'); ?></p>
                             <button class="btn btn-outline-primary" onclick="speakDescription('<?php echo htmlspecialchars($produit['Description'], ENT_QUOTES, 'UTF-8'); ?>')">
-                                            <i class="fa fa-volume-up me-2"></i> Lire la description
-                                        </button>
+                                <i class="fa fa-volume-up me-2"></i> listen
+                            </button>
                         <?php else: ?>
                             <p>Description non disponible</p>
-                        <?php endif; ?>
+                        <?php endif; ?> <br>
 
                         <?php if (isset($produit['Prix'])): ?>
                             <span class="text-primary me-1"><?php echo number_format((float)$produit['Prix'], 2, '.', ''); ?> dt</span>
@@ -240,25 +240,23 @@ if ($searchQuery && $nomCategorie) {
 
                         <!-- Affichage des étoiles de notation interactives -->
                         <div class="rating mb-2">
-                            <?php if (isset($produit['id_Produit'])): ?>
-                                <input type="hidden" id="product_id_<?php echo $produit['id_Produit']; ?>" value="<?php echo $produit['id_Produit']; ?>">
-                                <span class="star" data-value="1">&#9733;</span>
-                                <span class="star" data-value="2">&#9733;</span>
-                                <span class="star" data-value="3">&#9733;</span>
-                                <span class="star" data-value="4">&#9733;</span>
-                                <span class="star" data-value="5">&#9733;</span>
-                                <span id="rating_value_<?php echo $produit['id_Produit']; ?>" class="d-block mt-2"></span>
-                            <?php endif; ?>
+                            <input type="hidden" id="product_id_<?php echo htmlspecialchars($produit['Id_Produit'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars($produit['Id_Produit'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                            <span id="rating_value_<?php echo htmlspecialchars($produit['Id_Produit'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" class="d-block mt-2"></span>
                         </div>
                     </div>
                     <div class="d-flex border-top">
                         <small class="w-50 text-center border-end py-2">
-                            <a class="text-body" href="ViewProduct.php?id=<?php echo isset($produit['id_Produit']) ? urlencode($produit['id_Produit']) : '#'; ?>">
+                            <a class="text-body" href="ViewProduct.php?id=<?php echo !empty($produit['Id_Produit']) ? urlencode($produit['Id_Produit']) : '#'; ?>">
                                 <i class="fa fa-eye text-primary me-2"></i>Voir les détails
                             </a>
                         </small>
                         <small class="w-50 text-center py-2">
-                            <a class="text-body" href="AddToCart.php?id=<?php echo isset($produit['id_Produit']) ? urlencode($produit['id_Produit']) : '#'; ?>">
+                            <a class="text-body" href="AddToCart.php?id=<?php echo !empty($produit['Id_Produit']) ? urlencode($produit['Id_Produit']) : '#'; ?>">
                                 <i class="fa fa-shopping-bag text-primary me-2"></i>Ajouter au panier
                             </a>
                         </small>
@@ -270,6 +268,7 @@ if ($searchQuery && $nomCategorie) {
 <?php else: ?>
     <p>Aucun produit trouvé pour ce prix.</p>
 <?php endif; ?>
+
 <!-- Product End -->
 <script>
     function speakDescription(text) {
@@ -285,9 +284,6 @@ if ($searchQuery && $nomCategorie) {
 
 
 
-
-
-                       
 
 
     <!-- Firm Visit Start -->
@@ -456,18 +452,19 @@ if ($searchQuery && $nomCategorie) {
 
 
     <script>
-   document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const stars = document.querySelectorAll('.star');
 
+    // Ajout d'un événement de clic sur les étoiles
     stars.forEach(star => {
         star.addEventListener('click', function() {
             const rating = this.getAttribute('data-value'); // Récupérer la valeur de la note
-            const Id_Produit = this.closest('.product-item').querySelector('input[type="hidden"]').value; // Utiliser Id_Produit
+            const Id_Produit = this.closest('.product-item').querySelector('input[type="hidden"]').value; // ID du produit
 
-            // Mettre à jour les étoiles affichées
+            // Mettre à jour l'affichage des étoiles
             updateStars(Id_Produit, rating);
 
-            // Envoi de la note au serveur via AJAX
+            // Envoyer la note au serveur via AJAX
             submitRating(Id_Produit, rating);
         });
 
@@ -479,12 +476,13 @@ if ($searchQuery && $nomCategorie) {
 
         // Réinitialisation après survol
         star.addEventListener('mouseleave', function() {
-            const Id_Produit = this.closest('.product-item').querySelector('input[type="hidden"]').value; // Utiliser Id_Produit
+            const Id_Produit = this.closest('.product-item').querySelector('input[type="hidden"]').value;
             const rating = document.getElementById(`rating_value_${Id_Produit}`).value;
             highlightStars(this.closest('.product-item').querySelector('.rating'), rating);
         });
     });
 
+    // Fonction pour mettre à jour les étoiles affichées
     function updateStars(Id_Produit, rating) {
         const stars = document.querySelectorAll(`#rating_${Id_Produit} .star`);
         stars.forEach(star => {
@@ -500,23 +498,25 @@ if ($searchQuery && $nomCategorie) {
         document.getElementById(`rating_value_display_${Id_Produit}`).innerHTML = `Note: ${rating} étoiles`;
     }
 
+    // Fonction pour envoyer la note au serveur via AJAX
     function submitRating(Id_Produit, rating) {
-    console.log(`Envoi de la note pour le produit ${Id_Produit} avec la valeur ${rating}`);  // Vérifiez les données envoyées
+        console.log(`Envoi de la note pour le produit ${Id_Produit} avec la valeur ${rating}`);  // Vérifiez les données envoyées
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'rateProduct.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.send(`Id_Produit=${encodeURIComponent(Id_Produit)}&rating=${encodeURIComponent(rating)}`);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'rateProduct.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(`Id_Produit=${encodeURIComponent(Id_Produit)}&rating=${encodeURIComponent(rating)}`);
 
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            console.log('Réponse du serveur :', xhr.responseText);
-        } else {
-            console.log('Erreur lors de l\'envoi de la note.');
-        }
-    };
-}
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log('Réponse du serveur :', xhr.responseText);
+            } else {
+                console.log('Erreur lors de l\'envoi de la note.');
+            }
+        };
+    }
 
+    // Fonction pour mettre en surbrillance les étoiles pendant le survol
     function highlightStars(ratingContainer, rating) {
         const stars = ratingContainer.querySelectorAll('.star');
         stars.forEach(star => {
@@ -528,8 +528,6 @@ if ($searchQuery && $nomCategorie) {
         });
     }
 });
-
-
 </script>
 
 <style>
