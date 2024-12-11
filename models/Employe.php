@@ -6,17 +6,19 @@ class Employe {
     private $email;
     private $telephone;
     private $status;
+    private $isVerified;
+    private $emailConfirmationToken;
 
     // Constructor
-    public function __construct($nom, $prenom, $email, $telephone, $status, $id = null) {
+    public function __construct($nom, $prenom, $email, $telephone, $status, $isVerified = false, $emailConfirmationToken = null, $id = null) {
         $this->id = $id;
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->email = $email;
         $this->telephone = $telephone;
         $this->status = $status;
-    }
-
+        $this->isVerified = $isVerified; 
+        $this->emailConfirmationToken = $emailConfirmationToken; }
     // Getters
     public function getId() {
         return $this->id;
@@ -42,6 +44,14 @@ class Employe {
         return $this->status;
     }
 
+    public function getIsVerified() {
+        return $this->isVerified;
+    }
+
+    public function getEmailConfirmationToken() { // New getter
+        return $this->emailConfirmationToken;
+    }
+
     // Setters
     public function setNom($nom) {
         $this->nom = $nom;
@@ -61,6 +71,14 @@ class Employe {
 
     public function setStatus($status) {
         $this->status = $status;
+    }
+
+    public function setIsVerified($isVerified) {
+        $this->isVerified = $isVerified;
+    }
+
+    public function setEmailConfirmationToken($token) { // New setter
+        $this->emailConfirmationToken = $token;
     }
 }
 ?>
