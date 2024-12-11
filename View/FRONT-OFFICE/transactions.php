@@ -1,18 +1,63 @@
 <?php
 require_once __DIR__ . '/../../Config.php';
+require_once __DIR__ . '/../../vendor/autoload.php'; // Include Stripe PHP library
+
+// Set up Stripe API key
+\Stripe\Stripe::setApiKey('sk_test_51QT8a4H8w9WYGc2qOZ9kTlqY6ML7DBosVrFIf1G7FUcuslEMo0aBFHSLr9qj34ISPkBHcsIEauWxSDPcbvUij6DJ00iu0SpUtG');
 
 $pdo = Config::getConnexion();
 
-// Set default status filter (show "in progress" by default)
-$statusFilter = $_GET['status_filter'] ?? 'in progress';
-$itemsPerPage = 10; // Transactions per page
+// Handle POST request for payment processing
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        // Retrieve payment method ID and total amount from the POST data
+        $paymentMethodId = $_POST['payment_method_id'] ?? null;
+        $totalAmount = $_POST['total_amount'] ?? 0;
 
-// Get the current page from the URL (default is 1)
+        if ($paymentMethodId && $totalAmount > 0) {
+            // Create a PaymentIntent with the provided payment method
+            $paymentIntent = \Stripe\PaymentIntent::create([
+                'amount' => $totalAmount * 100, // Convert amount to cents
+                'currency' => 'usd', // Use your desired currency
+                'payment_method' => $paymentMethodId,
+                'confirm' => true,
+            ]);
+
+            // Insert transaction into the database
+            $stmt = $pdo->prepare("
+                INSERT INTO transaction (user_id, total, status, created_at) 
+                VALUES (:user_id, :total, 'in progress', NOW())
+            ");
+            $stmt->execute([
+                ':user_id' => 1, // Replace with the actual user ID
+                ':total' => $totalAmount,
+            ]);
+
+            // Respond with success
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'message' => 'Payment processed successfully.']);
+        } else {
+            throw new Exception('Invalid payment method or amount.');
+        }
+    } catch (\Stripe\Exception\CardException $e) {
+        // Handle Stripe card errors
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => $e->getError()->message]);
+    } catch (Exception $e) {
+        // Handle other errors
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
+// Existing code for fetching transactions (if needed)
+$statusFilter = $_GET['status_filter'] ?? 'in progress';
+$itemsPerPage = 5;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $itemsPerPage;
 
 try {
-    // Fetch transaction history based on the selected status
     $stmt = $pdo->prepare("
         SELECT * 
         FROM transaction 
@@ -24,10 +69,8 @@ try {
     $stmt->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
-
     $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get the total number of transactions for pagination
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM transaction WHERE status = :status");
     $stmt->bindValue(':status', $statusFilter);
     $stmt->execute();
@@ -37,6 +80,7 @@ try {
     die("Error fetching transactions: " . $e->getMessage());
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

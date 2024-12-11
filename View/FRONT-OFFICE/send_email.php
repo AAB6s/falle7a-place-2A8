@@ -11,7 +11,7 @@ if (empty($errors)) {
         $mail->Host = 'smtp.gmail.com'; // Set SMTP server
         $mail->SMTPAuth = true;
         $mail->Username = 'mehdialkanas@gmail.com'; // SMTP username
-        $mail->Password = ''; // SMTP password
+        $mail->Password = 'oezrucxxztcnxwsv'; // SMTP password
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
@@ -53,12 +53,19 @@ if (empty($errors)) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<body>
-    <div style="text-align:center;">
-        <h1>Check your Email for confirmation.</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Confirmation</title>
+</head>
+<body style="margin: 0; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f3f4f6;">
+    <div style="text-align: center; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); max-width: 400px; width: 90%;">
+        <h1 style="color: #4CAF50; font-size: 1.8rem; margin-bottom: 20px;">Check Your Email</h1>
+        <p style="color: #6c757d; font-size: 1rem; margin-top: 0;">We've sent a confirmation link to your email. Please check your inbox and follow the link to confirm your account.</p>
+        <a href="send_email.php" style="display: inline-block; margin-top: 20px; padding: 10px 20px; font-size: 1rem; color: white; background-color: #4CAF50; border: none; border-radius: 5px; text-decoration: none; cursor: pointer;">Resend Email</a>
     </div>
-    
 </body>
+</html>
 
 
 

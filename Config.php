@@ -1,4 +1,7 @@
 <?php
+// Add these lines in your config.php or somewhere secure
+define('STRIPE_SECRET_KEY', 'sk_test_51QT8a4H8w9WYGc2qdpxV6pztdcMQZMcsxSAiaOtCEajuImSIHL6FrRr18U9pMRhV59xBlMEiKXJ18nwDQ1hStOsO00BHyIP8pX');
+define('STRIPE_PUBLISHABLE_KEY', 'pk_test_51QT8a4H8w9WYGc2qOZ9kTlqY6ML7DBosVrFIf1G7FUcuslEMo0aBFHSLr9qj34ISPkBHcsIEauWxSDPcbvUij6DJ00iu0SpUtG');
 
 	class config 
 	{

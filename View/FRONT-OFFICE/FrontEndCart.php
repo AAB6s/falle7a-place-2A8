@@ -4,6 +4,8 @@ require __DIR__ . '/../../vendor/autoload.php'; // For PHPMailer
 
 $orderController = new OrderController();
 $orders = $orderController->listOrders(); // Fetch updated orders from the database
+$topProducts = $orderController->listTopPurchasedProducts();
+
 
 ?>
 
@@ -222,6 +224,108 @@ $orders = $orderController->listOrders(); // Fetch updated orders from the datab
         </button>
     </form>
 </div>
+
+<div class="container my-5" style="max-width: 1200px; margin: 0 auto;">
+    <!-- Title and Navigation -->
+    <div class="text-center mb-4">
+        <h2 class="section-title" style="font-size: 1.8rem; font-weight: bold; color: #333;">Top 5 Most Popular Products</h2>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <div class="d-flex justify-content-center mb-4">
+        <button class="btn btn-secondary btn-sm me-2" id="prevProduct" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa fa-arrow-left"></i>
+        </button>
+        <button class="btn btn-secondary btn-sm" id="nextProduct" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Products Section -->
+    <div class="row" id="productCarousel" style="display: flex; justify-content: center; gap: 16px;">
+        <div class="col-md-6 product-card" style="padding: 0 16px; text-align: center;">
+            <div class="product-item" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; transition: transform 0.2s ease-in-out;">
+                <!-- Product Details -->
+                <h3 class="h5 mb-2" style="font-size: 1.5rem; font-weight: bold; color: #333;"><?php echo htmlspecialchars($topProducts[0]['name']); ?></h3>
+                <span class="text-primary fw-bold" style="font-size: 1.2rem;"><?php echo number_format($topProducts[0]['price'], 2); ?> dt</span>
+                <!-- Rank -->
+                <div class="product-rank" style="font-size: 0.9rem; color: #888; margin-top: 10px;">
+                    Rank <?php echo 1; ?> <!-- Display the rank here -->
+                </div>
+                <div class="mt-3">
+                    <a class="btn btn-primary" href="#"> 
+                        <i class="fa fa-eye text-white me-2"></i> View Details
+                    </a>
+                    <a class="btn btn-success" href="addProduct.php?product_id=<?php echo $topProducts[0]['product_id']; ?>&quantity=1&client_id=1" style="color: #fff; text-decoration: none;">
+                        <i class="fa fa-shopping-bag text-white me-2"></i> Add to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Carousel Functionality -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const productCarousel = document.getElementById("productCarousel");
+        const prevButton = document.getElementById("prevProduct");
+        const nextButton = document.getElementById("nextProduct");
+
+        let currentProductIndex = 0;
+
+        const products = <?php echo json_encode($topProducts); ?>; // JSON array of products
+
+        // Function to display the current product
+        function displayProduct(index) {
+            const product = products[index];
+            productCarousel.innerHTML = `
+                <div class="col-md-6 product-card" style="padding: 0 16px; text-align: center;">
+                    <div class="product-item" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; transition: transform 0.2s ease-in-out;">
+                        <h3 class="h5 mb-2" style="font-size: 1.5rem; font-weight: bold; color: #333;">${product.name}</h3>
+                        <span class="text-primary fw-bold" style="font-size: 1.2rem;">${product.price} dt</span>
+                        <!-- Rank -->
+                        <div class="product-rank" style="font-size: 0.9rem; color: #888; margin-top: 10px;">
+                            Rank ${index + 1}
+                        </div>
+                        <div class="mt-3">
+                            <a class="btn btn-primary" href="product-detail.php?product_id=${product.product_id}" style="color: #fff; text-decoration: none;">
+                                <i class="fa fa-eye text-white me-2"></i> View Details
+                            </a>
+                            <a class="btn btn-success" href="addProduct.php?product_id=${product.product_id}&quantity=1&client_id=1" style="color: #fff; text-decoration: none;">
+                                <i class="fa fa-shopping-bag text-white me-2"></i> Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show the first product on page load
+        displayProduct(currentProductIndex);
+
+        // Navigate to the previous product
+        prevButton.addEventListener("click", function () {
+            if (currentProductIndex > 0) {
+                currentProductIndex--;
+            } else {
+                currentProductIndex = products.length - 1; // Loop to the last product
+            }
+            displayProduct(currentProductIndex);
+        });
+
+        // Navigate to the next product
+        nextButton.addEventListener("click", function () {
+            if (currentProductIndex < products.length - 1) {
+                currentProductIndex++;
+            } else {
+                currentProductIndex = 0; // Loop to the first product
+            }
+            displayProduct(currentProductIndex);
+        });
+    });
+</script>
+
     
 </div>
 <!-- Reviews Start -->

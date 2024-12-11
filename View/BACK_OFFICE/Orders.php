@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
             $mail->Host = 'smtp.gmail.com'; // Set SMTP server
             $mail->SMTPAuth = true;
             $mail->Username = 'mehdialkanas@gmail.com'; // SMTP username
-            $mail->Password = ''; // SMTP password
+            $mail->Password = 'oezrucxxztcnxwsv'; // SMTP password
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
     
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
             $mail->Host = 'smtp.gmail.com'; // Set SMTP server
             $mail->SMTPAuth = true;
             $mail->Username = 'mehdialkanas@gmail.com'; // SMTP username
-            $mail->Password = ''; // SMTP password
+            $mail->Password = 'oezrucxxztcnxwsv'; // SMTP password
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
     
@@ -177,6 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['transaction_id'], $_PO
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />

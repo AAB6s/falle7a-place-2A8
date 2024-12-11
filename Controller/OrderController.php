@@ -21,6 +21,33 @@ class OrderController
     }
 }
 
+public function listTopPurchasedProducts()
+{
+    try {
+        // Get the database connection
+        $pdo = Config::getConnexion();
+
+        // Query to get the top 5 most purchased products, ordered by the "buy" column
+        $stmt = $pdo->prepare("
+            SELECT p.product_id, p.name, p.price, p.image, p.buy
+            FROM products p
+            ORDER BY p.buy DESC
+            LIMIT 5
+        ");
+
+        // Execute the query
+        $stmt->execute();
+
+        // Fetch all the results and return them as an associative array
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } catch (Exception $e) {
+        // In case of an error, display the error message
+        die('Error: ' . $e->getMessage());
+    }
+}
+
+
 
     public function getOrderCount()
     {
