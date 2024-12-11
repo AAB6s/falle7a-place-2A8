@@ -11,15 +11,16 @@ class EmployeController {
     }
 
     // Create a new employee record
-    public function createEmploye($nom, $prenom, $email, $telephone, $status) {
-        $employe = new Employe($nom, $prenom, $email, $telephone, $status);
-        $query = "INSERT INTO employes (nom, prenom, email, telephone, status) VALUES (:nom, :prenom, :email, :telephone, :status)";
+    public function createEmploye($nom, $prenom, $email, $telephone, $status,$token) {
+        $employe = new Employe($nom, $prenom, $email, $telephone, $status, false, $token); 
+        $query = "INSERT INTO employes (nom, prenom, email, telephone, status, emailConfirmationToken) VALUES (:nom, :prenom, :email, :telephone, :status, :token)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nom', $nom);
         $stmt->bindParam(':prenom', $prenom);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':telephone', $telephone);
         $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':token', $token); // Bind the token parameter
         return $stmt->execute();
     }
 
@@ -50,6 +51,19 @@ class EmployeController {
         return $stmt->execute();
     }
 
+    public function getEmployeeByToken($token) {
+        $query = "SELECT nom, prenom FROM employes WHERE emailConfirmationToken = :token AND isVerified = 0";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC); // Return employee data
+        } else {
+            return null; // No employee found
+        }
+    }
+
     // Delete an employee record by ID
     public function deleteEmploye($id) {
         $query = "DELETE FROM employes WHERE id = :id";
@@ -66,7 +80,7 @@ class EmployeController {
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $employes = [];
         foreach ($results as $data) {
-            $employes[] = new Employe($data['nom'], $data['prenom'], $data['email'], $data['telephone'], $data['status'], $data['id']);
+            $employes[] = new Employe($data['nom'], $data['prenom'], $data['email'], $data['telephone'], $data['status'], $data['isVerified']);
         }
         return $employes;
     }
@@ -98,6 +112,19 @@ class EmployeController {
         $stmt->bindParam(':status', $status, PDO::PARAM_STR);
         $stmt->bindParam(':id', $employeeId, PDO::PARAM_INT);
         $stmt->execute();
+    }
+    public function updateVerificationStatus($token, $isVerified) {
+        $query = "UPDATE employes SET isVerified = :isVerified WHERE emailConfirmationToken = :token";
+        $stmt = $this->db->prepare($query);
+        
+        $stmt->bindParam(':isVerified', $isVerified);
+        $stmt->bindParam(':token', $token);
+        
+        if ($stmt->execute()) {
+            return true; 
+        } else {
+            return false; 
+        }
     }
 }
 ?>
