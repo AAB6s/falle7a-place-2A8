@@ -1,0 +1,222 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: #2d3b2f; /* Dark green background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+}
+
+/* Form Container */
+.form-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Base Form Box Styling */
+.form-box {
+    background-color: #1d2620;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    text-align: center;
+}
+
+/* Login Form Specific Styles */
+.login-form h2 {
+    color: #4CAF50;
+}
+
+.login-form .input-box input {
+    background-color: #1f2c23;
+}
+
+/* Sign Up Form Specific Styles */
+.signup-form h2 {
+    color: #FFA500;  /* Orange for Sign Up */
+}
+
+.signup-form .input-box input {
+    background-color: #2f3b2d;  /* Slightly different background for Sign Up */
+}
+.input-box i{
+    cursor: pointer;
+}
+/* Common Styles for both Forms */
+h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+/* Input Fields */
+.input-box {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Input Styling */
+.input-box input {
+    width: 100%;
+    padding: 12px 15px;
+    padding-left: 40px; /* Space for the icon */
+    font-size: 16px;
+    border: 2px solid #555;
+    border-radius: 5px;
+    outline: none;
+    background-color: #1f2c23;
+    color: white;
+    transition: border 0.3s ease, padding 0.3s ease; /* Smooth transition for padding */
+}
+
+/* Focus State */
+.input-box input:focus {
+    border-color: #4CAF50; /* Green border when focused */
+}
+
+/* Error State */
+.input-box input.error {
+    border-color: red; /* Red border for invalid inputs */
+    padding-left: 42px; /* Adjust padding to align with thicker border */
+}
+
+/* Error Message */
+.error-message {
+    font-size: 12px;
+    color: red;
+    margin-top: 5px;
+}
+
+/* Icons in Input (Left Side) */
+.input-box i {
+    position: absolute;
+    top: 50%;
+    left: 12px; /* Positioning icon on the left */
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 18px;
+    pointer-events: none; /* Prevent icon from being interactive */
+    transition: color 0.3s ease, top 0.3s ease; /* Smooth transition for color and position */
+}
+
+/* Adjust icon alignment for error state */
+.input-box input.error + i {
+    color: red; /* Change icon color to red for errors */
+    top: 50%; /* Ensures the icon stays vertically centered */
+}
+
+/* Password Field Eye Icon */
+.input-box i.fas.fa-eye,
+.input-box i.fas.fa-eye-slash {
+    right: 12px; /* Right side for password visibility toggle */
+    left: unset; /* Remove any left positioning for the eye icon */
+    cursor: pointer;
+}
+
+/* Button Styling */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+/* Button Hover State */
+button:hover {
+    background-color: #45a049;
+}
+
+/* Link Styling */
+.logreg-link {
+    margin-top: 20px;
+}
+
+.logreg-link p {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.logreg-link a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.logreg-link a:hover {
+    text-decoration: underline;
+}
+
+/* Prevent Autofill Suggestions */
+input {
+    -webkit-text-fill-color: white !important;
+}
+
+input:-webkit-autofill {
+    background-color: #1f2c23 !important;
+    color: white;
+}
+
+input[autocomplete="new-password"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Add Error Styles */
+input.error {
+    border: 2px solid red; /* Red border for error state */
+}
+
+/* Updated Error Message */
+.error-message {
+    color: red; /* Red text for error messages */
+    font-size: 12px; /* Adjust font size */
+    margin-top: 5px;
+}
+/* Loader Styles */
+.loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #4CAF50;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    z-index: 1000;
+}
+
+.loader.hidden {
+    display: none;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+

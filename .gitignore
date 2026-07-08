@@ -1,0 +1,11 @@
+.env
+*.log
+.DS_Store
+Thumbs.db
+vendor/
+node_modules/
+smart/vendor/
+smart/view/Back_Office/node_modules/
+smart/view/debug.log
+smart/view/Back_Office/uploads/*
+!smart/view/Back_Office/uploads/.gitkeep

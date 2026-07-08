@@ -1,0 +1,158 @@
+body {
+    background: linear-gradient(135deg, #f7f9fc, #edf1f5);
+    margin-top: 20px;
+    font-family: 'Poppins', sans-serif;
+    color: #495057;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px; /* Added slight rounding for a modern look */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.btn-circle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-circle.btn-lg,
+.btn-group-lg > .btn-circle.btn {
+    width: 50px;
+    height: 50px;
+    padding: 14px 15px;
+    font-size: 18px;
+    line-height: 23px;
+}
+
+.btn-circle:hover {
+    background-color: #45a049;
+    transform: scale(1.1);
+}
+
+.text-muted {
+    color: #8898aa !important;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+a:not(:disabled):hover,
+[type="button"]:not(:disabled):hover,
+[type="reset"]:not(:disabled):hover,
+[type="submit"]:not(:disabled):hover {
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 20px;
+}
+
+.user-table th {
+    background-color: #f1f3f5;
+    color: #495057;
+    text-align: left;
+    padding: 10px 15px;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: bold;
+}
+
+.user-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.user-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.user-table tbody tr .category-select {
+    max-width: 150px;
+    border-radius: 20px;
+    padding: 5px 10px;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    color: #495057;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-table tbody tr .category-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Smoothie Red Delete Button */
+.btn-delete {
+    border-radius: 20px;
+    width: auto;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #ff6b6b; /* Smoothie red */
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-delete:hover {
+    background-color: #fa5252; /* Slightly darker red on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+    cursor: pointer;
+}
+
+.btn-delete:active {
+    background-color: #f03e3e; /* Even darker red on click */
+    transform: scale(1); /* Reset zoom on click */
+}
+
+/* Manage Users Title */
+.manage-users-title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    color: #343a40; /* Dark gray for a professional look */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.manage-users-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(to right, #4caf50, #ff6b6b); /* Green to red gradient underline */
+    border-radius: 5px;
+}
+td{
+    padding: 20px;
+}
+a{
+    margin: 10px;
+    text-decoration: none;
+    border-radius: 50%;
+}

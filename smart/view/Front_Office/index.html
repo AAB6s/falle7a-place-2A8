@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Foody - Organic Food Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link href="img/favicon.ico" rel="icon" />
+
+    <link href="css/chatbot.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <link href="lib/animate/animate.min.css" rel="stylesheet" />
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div
+      id="spinner"
+      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div
+      class="container-fluid fixed-top px-0 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
+        <div class="col-lg-6 px-5 text-start">
+          <small
+            ><i class="fa fa-map-marker-alt me-2"></i>123 Street, New York,
+            USA</small
+          >
+          <small class="ms-4"
+            ><i class="fa fa-envelope me-2"></i>contact@falle7a.local</small
+          >
+        </div>
+        <div class="col-lg-6 px-5 text-end">
+          <small>Follow us:</small>
+          <a class="text-body ms-3" href=""
+            ><i class="fab fa-facebook-f"></i
+          ></a>
+          <a class="text-body ms-3" href=""><i class="fab fa-twitter"></i></a>
+          <a class="text-body ms-3" href=""
+            ><i class="fab fa-linkedin-in"></i
+          ></a>
+          <a class="text-body ms-3" href=""><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <nav
+        class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn"
+        data-wow-delay="0.1s"
+      >
+        <a href="index.html" class="navbar-brand ms-4 ms-lg-0">
+          <h1 class="fw-bold text-primary m-0">
+            FALLE<span class="text-secondary">7</span>A
+          </h1>
+        </a>
+        <button
+          type="button"
+          class="navbar-toggler me-4"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="#" class="nav-item nav-link active">Home</a>
+            <a href="../ListeProduits.php" class="nav-item nav-link"
+              >Products</a
+            >
+            <div class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                id="servicesDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                >Services</a
+              >
+              <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                <li>
+                  <a class="dropdown-item" href="services.php"
+                    >view our approved employees</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="service_page.php#view_services"
+                    >View our services</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="service_page.php#service_request"
+                    >Request a Service</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="service_page.php#history_service"
+                    >View Service History</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <a href="contact.php" class="nav-item nav-link">Contact Us</a>
+            <a href="#" class="nav-item nav-link">About Us</a>
+          </div>
+          <div class="d-none d-lg-flex ms-2">
+            <a class="btn-sm-square bg-white rounded-circle ms-3" href="#"
+              ><small class="fa fa-search text-body"></small
+            ></a>
+            <a
+              class="btn-sm-square bg-white rounded-circle ms-3"
+              href="../logout.php"
+              ><small class="fa fa-user text-body"></small
+            ></a>
+            <a
+              class="btn-sm-square bg-white rounded-circle ms-3"
+              href="cart.html"
+            >
+              <small class="fa fa-shopping-bag text-body"></small>
+              <span
+                id="cart-count"
+                style="
+                  position: absolute;
+                  right: 40px;
+                  background-color: red;
+                  width: 20px;
+                  height: 20px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  border-radius: 50%;
+                  color: #fff;
+                  top: 60%;
+                  margin-bottom: 100px;
+                "
+                >4</span
+              >
+            </a>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container-fluid p-0 mb-5 wow fadeIn" data-wow-delay="0.1s">
+      <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="w-100" src="img/carousel-1.jpg" alt="Image" />
+            <div class="carousel-caption">
+              <div class="container">
+                <div class="row justify-content-start">
+                  <div class="col-lg-7">
+                    <h1 class="display-2 mb-5 animated slideInDown">
+                      Organic Food Is Good For Health
+                    </h1>
+                    <a
+                      href=""
+                      class="btn btn-primary rounded-pill py-sm-3 px-sm-5"
+                      >Products</a
+                    >
+                    <a
+                      href=""
+                      class="btn btn-secondary rounded-pill py-sm-3 px-sm-5 ms-3"
+                      >Services</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img class="w-100" src="img/carousel-2.jpg" alt="Image" />
+            <div class="carousel-caption">
+              <div class="container">
+                <div class="row justify-content-start">
+                  <div class="col-lg-7">
+                    <h1 class="display-2 mb-5 animated slideInDown">
+                      Natural Food Is Always Healthy
+                    </h1>
+                    <a
+                      href=""
+                      class="btn btn-primary rounded-pill py-sm-3 px-sm-5"
+                      >Products</a
+                    >
+                    <a
+                      href=""
+                      class="btn btn-secondary rounded-pill py-sm-3 px-sm-5 ms-3"
+                      >Services</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#header-carousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#header-carousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="container-xxl py-5">
+      <div class="container">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+            <div class="about-img position-relative overflow-hidden p-5 pe-0">
+              <img class="img-fluid w-100" src="img/about.jpg" />
+            </div>
+          </div>
+          <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+            <h1 class="display-5 mb-4">Best Organic Fruits And Vegetables</h1>
+            <p class="mb-4">
+              At Falle7a Place, we take pride in offering fresh, organic fruits
+              and vegetables that are both nutritious and delicious. Sourced
+              directly from trusted farmers, our produce is grown using
+              sustainable and chemical-free farming practices to ensure the
+              highest quality for you and your family.
+            </p>
+            <p>
+              <i class="fa fa-check text-primary me-3"></i>Leafy Greens:
+              Spinach, lettuce, kale, and parsley – rich in vitamins and
+              minerals.
+            </p>
+            <p>
+              <i class="fa fa-check text-primary me-3"></i>Root Vegetables:
+              Carrots, potatoes, beets, and radishes – perfect for energy and
+              nourishment.
+            </p>
+            <p>
+              <i class="fa fa-check text-primary me-3"></i>Everyday Essentials:
+              Tomatoes, cucumbers, bell peppers, onions, and garlic – fresh
+              staples for every meal.
+            </p>
+            <p>
+              <i class="fa fa-check text-primary me-3"></i>Seasonal Specials:
+              Enjoy a variety of seasonal veggies, harvested at their peak for
+              maximum flavor.
+            </p>
+            <a class="btn btn-primary rounded-pill py-3 px-5 mt-3" href=""
+              >Read More</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light bg-icon my-5 py-6">
+      <div class="container">
+        <div
+          class="section-header text-center mx-auto mb-5 wow fadeInUp"
+          data-wow-delay="0.1s"
+          style="max-width: 500px"
+        >
+          <h1 class="display-5 mb-3">Our Features</h1>
+          <p>
+            Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam
+            justo sed rebum vero dolor duo.
+          </p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="bg-white text-center h-100 p-4 p-xl-5">
+              <img class="img-fluid mb-4" src="img/icon-1.png" alt="" />
+              <h4 class="mb-3">Natural Process</h4>
+              <p class="mb-4">
+                "Grown with care using eco-friendly and sustainable farming
+                practices, ensuring the purest quality."
+              </p>
+              <a
+                class="btn btn-outline-primary border-2 py-2 px-4 rounded-pill"
+                href=""
+                >Read More</a
+              >
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="bg-white text-center h-100 p-4 p-xl-5">
+              <img class="img-fluid mb-4" src="img/icon-2.png" alt="" />
+              <h4 class="mb-3">Organic Products</h4>
+              <p class="mb-4">
+                "Fresh, chemical-free produce straight from nature, packed with
+                nutrients for a healthier you."
+              </p>
+              <a
+                class="btn btn-outline-primary border-2 py-2 px-4 rounded-pill"
+                href=""
+                >Read More</a
+              >
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+            <div class="bg-white text-center h-100 p-4 p-xl-5">
+              <img class="img-fluid mb-4" src="img/icon-3.png" alt="" />
+              <h4 class="mb-3">Biologically Safe</h4>
+              <p class="mb-4">
+                "Tested and certified to be safe, offering you healthy, natural
+                products you can trust."
+              </p>
+              <a
+                class="btn btn-outline-primary border-2 py-2 px-4 rounded-pill"
+                href=""
+                >Read More</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-primary bg-icon mt-5 py-6">
+      <div class="container">
+        <div class="row g-5 align-items-center">
+          <div class="col-md-7 wow fadeIn" data-wow-delay="0.1s">
+            <h1 class="display-5 text-white mb-3">
+              Welcome to Falle7a Place! 🌿
+            </h1>
+            <p class="text-white mb-0">
+              Your trusted destination for fresh, organic fruits, vegetables,
+              and premium agricultural products. We deliver quality and
+              sustainability straight to your doorstep across Tunisia.<br />
+              "Healthy, Fresh, and Natural – Every Day!" 🍎🥦
+            </p>
+          </div>
+          <div class="col-md-5 text-md-end wow fadeIn" data-wow-delay="0.5s">
+            <a class="btn btn-lg btn-secondary rounded-pill py-3 px-5" href=""
+              >Visit Now</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light bg-icon py-6 mb-5">
+      <div class="container">
+        <div
+          class="section-header text-center mx-auto mb-5 wow fadeInUp"
+          data-wow-delay="0.1s"
+          style="max-width: 500px"
+        >
+          <h1 class="display-5 mb-3">Customer Reviews 🌟</h1>
+          <p>
+            Discover what our happy customers are saying about their experience
+            with Falle7a Place. From fresh, organic produce to reliable delivery
+            and top-notch service, we take pride in providing the best for you!
+            Here's what our customers have to say.
+          </p>
+        </div>
+        <div
+          class="owl-carousel testimonial-carousel wow fadeInUp"
+          data-wow-delay="0.1s"
+        >
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              "I’ve been ordering from Falle7a Place for months now, and the
+              produce is always fresh and organic. Their delivery service is
+              fast, and I love supporting local farmers!"
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-1.jpg"
+                alt=""
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">Client Name</h5>
+                <span>Profession</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              "Falle7a Place offers the best variety of fruits and vegetables. I
+              can taste the difference, and I feel great knowing they are grown
+              naturally. Highly recommend!"
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-2.jpg"
+                alt=""
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">Client Name</h5>
+                <span>Profession</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam
+              amet diam et eos. Clita erat ipsum et lorem et sit.
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-3.jpg"
+                alt=""
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">Client Name</h5>
+                <span>Profession</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-item position-relative bg-white p-5 mt-4">
+            <i
+              class="fa fa-quote-left fa-3x text-primary position-absolute top-0 start-0 mt-n4 ms-5"
+            ></i>
+            <p class="mb-4">
+              "I needed farming supplies and equipment, and Falle7a Place had
+              everything I needed. The customer service is excellent, and the
+              delivery was prompt!"
+            </p>
+            <div class="d-flex align-items-center">
+              <img
+                class="flex-shrink-0 rounded-circle"
+                src="img/testimonial-4.jpg"
+                alt=""
+              />
+              <div class="ms-3">
+                <h5 class="mb-1">Client Name</h5>
+                <span>Profession</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-xxl py-5">
+      <div class="container">
+        <div
+          class="section-header text-center mx-auto mb-5 wow fadeInUp"
+          data-wow-delay="0.1s"
+          style="max-width: 500px"
+        >
+          <h1 class="display-5 mb-3">Latest Blog 🌱</h1>
+          <p>
+            Stay up-to-date with the latest tips, insights, and guides on
+            organic farming, sustainable practices, and more. Check out our
+            latest articles to help you grow your own healthy fruits and
+            vegetables, and learn the best techniques to maintain a thriving
+            farm.
+          </p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+            <img class="img-fluid" src="img/blog-1.jpg" alt="" />
+            <div class="bg-light p-4">
+              <a class="d-block h5 lh-base mb-4" href=""
+                >Learn the essential steps for growing organic produce at home
+                with tips from experienced farmers.</a
+              >
+              <div class="text-muted border-top pt-4">
+                <small class="me-3"
+                  ><i class="fa fa-user text-primary me-2"></i>Admin</small
+                >
+                <small class="me-3"
+                  ><i class="fa fa-calendar text-primary me-2"></i>01 Jan,
+                  2045</small
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+            <img class="img-fluid" src="img/blog-2.jpg" alt="" />
+            <div class="bg-light p-4">
+              <a class="d-block h5 lh-base mb-4" href=""
+                >Discover the benefits of sustainable farming practices and how
+                they contribute to a better environment.</a
+              >
+              <div class="text-muted border-top pt-4">
+                <small class="me-3"
+                  ><i class="fa fa-user text-primary me-2"></i>Admin</small
+                >
+                <small class="me-3"
+                  ><i class="fa fa-calendar text-primary me-2"></i>01 Jan,
+                  2045</small
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+            <img class="img-fluid" src="img/blog-3.jpg" alt="" />
+            <div class="bg-light p-4">
+              <a class="d-block h5 lh-base mb-4" href=""
+                >A guide to the best tools for cultivating your organic garden
+                with ease and efficiency.</a
+              >
+              <div class="text-muted border-top pt-4">
+                <small class="me-3"
+                  ><i class="fa fa-user text-primary me-2"></i>Admin</small
+                >
+                <small class="me-3"
+                  ><i class="fa fa-calendar text-primary me-2"></i>01 Jan,
+                  2045</small
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div
+      class="container-fluid bg-dark footer mt-5 pt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container py-5">
+        <div
+          class="row g-5"
+          style="display: flex; justify-content: space-between"
+        >
+          <div class="col-lg-3 col-md-6">
+            <h1 class="fw-bold text-primary mb-4">
+              FALLE<span class="text-secondary">7</span>A
+            </h1>
+            <p>
+              Our products are organic, sourced directly from the farm to ensure
+              the highest quality and freshness
+            </p>
+            <div class="d-flex pt-2">
+              <a
+                class="btn btn-square btn-outline-light rounded-circle me-1"
+                href=""
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a
+                class="btn btn-square btn-outline-light rounded-circle me-1"
+                href=""
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                class="btn btn-square btn-outline-light rounded-circle me-1"
+                href=""
+                ><i class="fab fa-youtube"></i
+              ></a>
+              <a
+                class="btn btn-square btn-outline-light rounded-circle me-0"
+                href=""
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h4 class="text-light mb-4">Address</h4>
+            <p>
+              <i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA
+            </p>
+            <p><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+            <p><i class="fa fa-envelope me-3"></i>contact@falle7a.local</p>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h4 class="text-light mb-4">Quick Links</h4>
+            <a class="btn btn-link" href="">About Us</a>
+            <a class="btn btn-link" href="">Contact Us</a>
+            <a class="btn btn-link" href="">Our Services</a>
+            <a class="btn btn-link" href="">Terms & Condition</a>
+            <a class="btn btn-link" href="">Support</a>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid copyright">
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+              &copy; <a href="#">Your Site Name</a>, All Right Reserved.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="floating-chat">
+      <i class="fa fa-comments" aria-hidden="true"></i>
+      <div class="chat">
+        <div class="header">
+          <span class="title"> what's on your mind? </span>
+          <button>
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+        <ul class="messages">
+          <li class="other">
+            <img
+              src="https://i.pinimg.com/736x/f5/96/9d/f5969dc8d64385ae8fb66b4aafbf2ad5.jpg"
+              alt="Chatbot Avatar"
+            />
+            <span>Hello! How can I assist you today?</span>
+          </li>
+        </ul>
+        <div class="footer">
+          <div class="text-box" contenteditable="true" disabled="true"></div>
+          <button id="sendMessage">send</button>
+        </div>
+      </div>
+    </div>
+    <a
+      href="#"
+      class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"
+      ><i class="bi bi-arrow-up"></i
+    ></a>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <script src="js/chatbot.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
